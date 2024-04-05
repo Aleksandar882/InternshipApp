@@ -1,7 +1,6 @@
 package com.spring.internshipapp.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -11,7 +10,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 @NoArgsConstructor
 public class Student {
     @Id
-    private String index;
+    private Long index;
 
     private String email;
 
@@ -21,15 +20,26 @@ public class Student {
 
     private String surname;
 
-    public Student(String index, String email, String password, String name, String surname) {
+    @Enumerated(value = EnumType.STRING)
+    private Role role;
+
+    @ManyToOne
+    private Internship internship;
+
+    @ManyToOne
+    private Coordinator coordinator;
+
+
+    public Student(Long index, String email, String password, String name, String surname, Role role) {
         this.index = index;
         this.email = email;
         this.password = password;
         this.name = name;
         this.surname = surname;
+        this.role=role;
     }
 
-    public String getIndex() {
+    public Long getIndex() {
         return index;
     }
 
@@ -49,7 +59,7 @@ public class Student {
         return surname;
     }
 
-    public void setIndex(String index) {
+    public void setIndex(Long index) {
         this.index = index;
     }
 
