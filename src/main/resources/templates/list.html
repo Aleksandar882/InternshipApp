@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>MovieNight</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="UTF-8">
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+
+
+
+    <style>
+
+        .custom-inline{
+            display: inline!important;
+        }
+
+        .custom-hr{
+            width: 100%;
+            border-color: grey;
+        }
+
+    </style>
+
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Финки пракси</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/internships">Пракси</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/companies">Компании</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/internships/add" class="nav-link">Додади нова пракса</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+
+
+        <div id="scrollto" class="col-lg-4 mt-5" th:each="internship: ${internships}">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${internship.position}"></h5>
+                    <hr class="custom-hr">
+                    <span>Локација:</span>
+                    <span class="card-text" th:text="${internship.location}"></span>
+                    <hr class="custom-hr">
+                    <p class="card-text" th:text="${internship.description}"></p>
+                    <hr class="custom-hr">
+                    <span>Времетраење:</span>
+                    <p class="card-text" th:text="${internship.timePeriod}"></p>
+                    <hr class="custom-hr">
+                    <span>Компанија:</span>
+                    <span class="card-text" th:text="${internship.company.name}"></span>
+                    <hr class="custom-hr">
+
+                    <!-- ForumUsersController.delete (Only ADMIN can see this element)-->
+                    <form class="custom-inline" method="POST" th:action="@{'/internships/{id}/delete' (id=${internship.id})}">
+                        <button type="submit" class="btn">Избриши</button>
+                    </form>
+                    <!-- ForumUsersController.showEdit (Only ADMIN can see this element)-->
+                    <a th:href="@{'/internships/{id}/edit' (id=${internship.id})}"  class="btn">Ажурирај</a>
+                    <!-- <form class="custom-inline" th:action="@{'/shopping-cart/add-movie/{id}' (id=${movie.getId()})}"
+                           th:method="POST">
+                         <button type="submit"
+                                 class="btn">Пријави се</button>
+                     </form>
+                     -->
+
+                 </div>
+             </div>
+         </div>
+
+
+     </div>
+ </div>
+
+ </body>
+ </html>

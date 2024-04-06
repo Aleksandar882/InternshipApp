@@ -28,8 +28,7 @@ public class Coordinator {
     @OneToMany(mappedBy = "coordinator", fetch = FetchType.EAGER)
     private List<Student> students;
 
-    public Coordinator(Long id, String name, String surname, String email, String password, Role role, List<Student> students) {
-        this.id = id;
+    public Coordinator(String name, String surname, String email, String password, Role role, List<Student> students) {
         this.name = name;
         this.surname = surname;
         this.email = email;

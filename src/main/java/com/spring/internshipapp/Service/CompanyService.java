@@ -11,7 +11,7 @@ public interface CompanyService {
 
     List<Company> getAllCompanies();
 
-    Optional<Company> getCompanyById(Long id);
+    Company getCompanyById(Long id);
 
     Optional<Company> updateCompany(Long id,String name, String email,String password, Integer number, String description, String imageUrl, String address, Role role);
 

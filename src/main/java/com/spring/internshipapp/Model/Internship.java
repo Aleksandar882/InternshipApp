@@ -29,8 +29,7 @@ public class Internship {
     @OneToMany(mappedBy = "internship", fetch = FetchType.EAGER)
     private List<Student> students;
 
-    public Internship(Long id, String position, String location, String description, String timePeriod, Company company) {
-        this.id = id;
+    public Internship(String position, String location, String description, String timePeriod, Company company) {
         this.position = position;
         this.location = location;
         this.description = description;

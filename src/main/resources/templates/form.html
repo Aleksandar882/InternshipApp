@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>MovieNight</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+
+    <style>
+
+        .custom-inline{
+            display: inline!important;
+        }
+
+        .custom-hr{
+            width: 100%;
+            border-color: grey;
+        }
+
+    </style>
+
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Финки пракси</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="/internships">Пракси</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/companies">Компании</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/internships/add" class="nav-link active" aria-current="page">Додади нова пракса</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="d-flex text-center justify-content-center">
+    <div class="width1">
+        <form method="POST" th:action="@{'/internships/{id}' (id=${internship?.id})}">
+            <h1>Додади нова пракса</h1>
+
+            <div class="form-group mb-3">
+                <label for="f1">Позиција</label>
+                <input type="text" class="form-control form-control-lg" id="f1" name="position"
+                       placeholder="Позиција на праксата" required th:value="${internship?.position}">
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="f2">Локација</label>
+                <input type="text" class="form-control form-control-lg" id="f2" name="location"
+                       placeholder="Локација на праксата" required th:value="${internship?.location}">
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="f3">Опис</label>
+                <input type="text" class="form-control form-control-lg" id="f3" name="description"
+                       placeholder="Опис на праксата" required th:value="${internship?.description}">
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="f4">Времетраење</label>
+                <input type="text" class="form-control form-control-lg" id="f4" name="timePeriod"
+                       placeholder="Времетраење на праксата" required th:value="${internship?.timePeriod}">
+            </div>
+
+
+            <div class="form-group mb-3">
+                <label>Компанија</label>
+                <div>
+                    <select class="form-control-lg" id="f5" name="companyId">
+                        <option th:each="company1: ${companies}" th:value="${company1.id}" th:text="${company1.name}">
+                            [company_name]
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+
+            <button class="btn" id="submit" type="submit">Внеси</button>
+            <a id="back" href="/internships" type="button" class="btn">Почетна</a>
+        </form>
+
+    </div>
+
+
+</div>
+
+
+</body>
+</html>
