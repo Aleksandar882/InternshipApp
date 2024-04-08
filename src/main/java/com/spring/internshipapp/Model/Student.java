@@ -8,13 +8,9 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 @Data
 @Entity
 @NoArgsConstructor
-public class Student {
-    @Id
+public class Student extends User {
+
     private Long index;
-
-    private String email;
-
-    private String password;
 
     private String name;
 
@@ -29,11 +25,13 @@ public class Student {
     @ManyToOne
     private Coordinator coordinator;
 
+    public Student(String email,String password) {
+        super(email,password);
+    }
+
 
     public Student(Long index, String email, String password, String name, String surname, Role role) {
         this.index = index;
-        this.email = email;
-        this.password = password;
         this.name = name;
         this.surname = surname;
         this.role=role;
@@ -41,14 +39,6 @@ public class Student {
 
     public Long getIndex() {
         return index;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public String getName() {
@@ -61,14 +51,6 @@ public class Student {
 
     public void setIndex(Long index) {
         this.index = index;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public void setName(String name) {

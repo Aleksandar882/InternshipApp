@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Финки Пракси</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+
+
+
+    <style>
+
+        .custom-inline{
+            display: inline!important;
+        }
+
+        .custom-hr{
+            width: 100%;
+            border-color: grey;
+        }
+        .width1 {
+            width: 27rem;
+            background: #f3f3f3;
+            border-radius: 7px;
+            padding: 1rem;
+            margin-top: 5vh;
+        }
+
+        body {
+            background-color: rgb(24, 25, 26);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        a {
+            text-decoration: none;
+        }
+        .linkovi {
+            text-decoration: none;
+            color: white;
+            padding: 0 10px;
+        }
+
+        .lists {
+            list-style-type: none;
+        }
+
+        .bttns {
+            color: white;
+        }
+
+    </style>
+
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Финки пракси</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/internships">Пракси</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/companies">Компании</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/internships/add" class="nav-link">Додади нова пракса</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+<h1 th:if="${hasError}" th:text="${error}"></h1>
+</div>
+<div class="container">
+    <div class="d-flex text-center justify-content-center">
+        <div class="width1 bg-dark" >
+            <form class="form-signin mt-xl-5" method="post" action="/register">
+                <h2 class="form-signin-heading">Регистрација</h2>
+                <br>
+                <p>
+                    <label for="index" class="sr-only">Индекс:</label>
+                    <input type="number" id="index" name="index" class="form-control" placeholder="Индекс" required=""
+                           autofocus="">
+                </p>
+                <p>
+                    <label for="name" class="sr-only">Име:</label>
+                    <input type="text" id="name" name="name" class="form-control" placeholder="Име" required=""
+                           autofocus="">
+                </p>
+                <p>
+                    <label for="surname" class="sr-only">Презиме:</label>
+                    <input type="text" id="surname" name="surname" class="form-control" placeholder="Презиме" required=""
+                           autofocus="">
+                </p>
+                <p>
+                    <label for="email" class="sr-only">Електронска пошта:</label>
+                    <input type="text" id="email" name="email" class="form-control" placeholder="Електронска пошта" required=""
+                           autofocus="">
+                </p>
+                <p>
+                    <label for="password" class="sr-only">Лозинка:</label>
+                    <input type="password" id="password" name="password" class="form-control"
+                           placeholder="Лозинка" required="">
+                </p>
+                <p>
+                    <label for="repeatPassword" class="sr-only">Потврдете лозинка:</label>
+                    <input type="password" id="repeatPassword" name="repeatPassword" class="form-control"
+                           placeholder="Потврдете лозинка" required="">
+                </p>
+                <button class="btn btn-lg btn-block bttns" type="submit">Потврда</button>
+            </form>
+            <a href="/login" class="btn btn-block bttns">Веќе имате профил? Логирајте се тука!</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

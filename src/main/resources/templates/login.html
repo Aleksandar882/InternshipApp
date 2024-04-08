@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Финки Пракси</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+
+
+
+    <style>
+
+        .custom-inline{
+            display: inline!important;
+        }
+
+        .custom-hr{
+            width: 100%;
+            border-color: grey;
+        }
+
+        .width1 {
+            width: 27rem;
+            background: #f3f3f3;
+            border-radius: 7px;
+            padding: 1rem;
+            margin-top: 5vh;
+        }
+
+        body {
+            background-color: rgb(24, 25, 26);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .linkovi {
+            text-decoration: none;
+            color: white;
+            padding: 0 10px;
+        }
+
+        .lists {
+            list-style-type: none;
+        }
+
+        .bttns {
+            color: white;
+        }
+
+    </style>
+
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Финки пракси</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/internships">Пракси</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/companies">Компании</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/internships/add" class="nav-link">Додади нова пракса</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div>
+    <div class="d-flex text-center container justify-content-center">
+        <div class="width1 bg-dark">
+
+            <form class="form-signin custom-inline" method="post" action="/login">
+                <h2 class="form-signin-heading align-self-top">Логин</h2>
+                <br>
+                <p>
+                    <label for="email" class="sr-only">Електронска пошта</label>
+                    <br>
+                    <input type="text" id="email" name="email" class="form-control" placeholder="Електронска пошта" required=""
+                           autofocus="">
+                </p>
+                <p>
+                    <label for="password" class="sr-only">Лозинка:</label>
+                    <br>
+
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Лозинка"
+                           required="">
+                </p>
+
+                <div th:text="${param.error}" class="text-danger"></div>
+                <button id="submit" class="btn bttns" type="submit">Потврда</button>
+            </form>
+            <a href="/register" class="btn bttns">Регистрирајте нов профил</a>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
