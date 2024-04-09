@@ -21,8 +21,8 @@ public class CompanyServiceImpl implements CompanyService {
 
 
     @Override
-    public Optional<Company> addNewCompany(String name,Integer number, String description, String imageUrl, String address, Role role) {
-        Company company = new Company(name,number,description,imageUrl,address,role);
+    public Optional<Company> addNewCompany(String name,Integer number, String description, String imageUrl, String address) {
+        Company company = new Company(name,number,description,imageUrl,address);
         return Optional.of(this.companyRepository.save(company));
     }
 
@@ -37,14 +37,13 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public Optional<Company> updateCompany(Long id, String name,Integer number, String description, String imageUrl, String address, Role role) {
+    public Optional<Company> updateCompany(Long id, String name,Integer number, String description, String imageUrl, String address) {
         Company company=this.companyRepository.findById(id).orElseThrow(CompanyNotFound::new);
         company.setName(name);
         company.setNumber(number);
         company.setDescription(description);
         company.setImageUrl(imageUrl);
         company.setAddress(address);
-        company.setRole(role);
         return Optional.of(this.companyRepository.save(company));
     }
 

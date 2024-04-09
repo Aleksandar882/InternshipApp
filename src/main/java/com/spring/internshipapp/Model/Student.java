@@ -16,8 +16,6 @@ public class Student extends User {
 
     private String surname;
 
-    @Enumerated(value = EnumType.STRING)
-    private Role role;
 
     @ManyToOne
     private Internship internship;
@@ -25,16 +23,15 @@ public class Student extends User {
     @ManyToOne
     private Coordinator coordinator;
 
-    public Student(String email,String password) {
-        super(email,password);
+    public Student(String email,String password,Role role) {
+        super(email,password,role);
     }
 
 
-    public Student(Long index, String email, String password, String name, String surname, Role role) {
+    public Student(Long index, String email, String password, String name, String surname) {
         this.index = index;
         this.name = name;
         this.surname = surname;
-        this.role=role;
     }
 
     public Long getIndex() {

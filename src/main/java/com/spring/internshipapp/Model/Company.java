@@ -23,23 +23,19 @@ public class Company extends User {
 
     private String address;
 
-    @Enumerated(value = EnumType.STRING)
-    private Role role;
-
     @OneToMany(mappedBy = "company", fetch = FetchType.EAGER)
     private List<Internship> internships;
 
-    public Company(String email,String password) {
-        super(email,password);
+    public Company(String email,String password,Role role) {
+        super(email,password,role);
     }
 
-    public Company(String name,Integer number, String description, String imageUrl, String address, Role role) {
+    public Company(String name,Integer number, String description, String imageUrl, String address) {
         this.name = name;
         this.number=number;
         this.description = description;
         this.imageUrl = imageUrl;
         this.address=address;
-        this.role = role;
     }
 
 
@@ -82,14 +78,6 @@ public class Company extends User {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
     }
 
     public List<Internship> getInternships() {

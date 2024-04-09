@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <title>Финки Пракси</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="UTF-8">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <style>
 
@@ -15,6 +16,19 @@
             width: 100%;
             border-color: grey;
         }
+        .custom-username{
+            list-style: none;
+        }
+        .accountnamestyle{
+            list-style-type: none;
+            text-decoration: none;
+            color: orangered;
+            padding: 0 10px;
+            margin-right: 5px;
+        }
+        .usericonstyle{
+            margin-left: 10px;
+        }
 
     </style>
 
@@ -23,7 +37,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">Финки пракси</a>
+        <a class="navbar-brand" href="/internships">Финки пракси</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -36,11 +50,29 @@
                     <a class="nav-link" href="/companies">Компании</a>
                 </li>
                 <li class="nav-item">
-                    <a href="/internships/add" class="nav-link active" aria-current="page">Додади нова пракса</a>
+                    <a href="/internships/add" class="nav-link active" aria-current="page" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN') or #strings.contains(#authentication.principal.authorities,'ROLE_COMPANY'))}">Додади нова пракса</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" sec:authorize="!isAuthenticated()" href="/login">Најава</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" sec:authorize="isAuthenticated()" href="/logout">Одјава</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" sec:authorize="!isAuthenticated()" href="/register">Регистрација на студент</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" sec:authorize="!isAuthenticated()" href="/register-company">Регистрација на компанија</a>
                 </li>
             </ul>
         </div>
+        <li class="custom-username">
+            <i class="fa fa-user-o usericonstyle" sec:authorize="isAuthenticated()" aria-hidden="true">
+                <span class="accountnamestyle"    sec:authentication="name"></span>
+            </i>
+        </li>
     </div>
+
 </nav>
 
 <div class="d-flex text-center justify-content-center">

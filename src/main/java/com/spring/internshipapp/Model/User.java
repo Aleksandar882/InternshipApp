@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -23,19 +24,24 @@ public class User implements UserDetails {
     @Column(nullable = false, unique = true, length = 10)
     private String password;
 
+    @Enumerated(value = EnumType.STRING)
+    private Role role;
+
+
 
     public User() {}
 
-    public User(String email, String password) {
+    public User(String email, String password, Role role) {
         this.email = email;
         this.password = password;
+        this.role=role;
 
     }
 
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return new HashSet<GrantedAuthority>();
+        return Collections.singletonList(role);
     }
 
     @Override

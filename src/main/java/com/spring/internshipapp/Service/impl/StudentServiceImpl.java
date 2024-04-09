@@ -22,8 +22,8 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Optional<Student> addNewStudent(Long index, String email, String password, String name, String surname, Role role) {
-        Student student= new Student(index,email,password,name,surname,role);
+    public Optional<Student> addNewStudent(Long index, String email, String password, String name, String surname) {
+        Student student= new Student(index,email,password,name,surname);
         return Optional.of(this.studentRepository.save(student));
     }
 
@@ -38,13 +38,12 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Optional<Student> updateStudent(Long index, String email, String password, String name, String surname, Role role) {
+    public Optional<Student> updateStudent(Long index, String email, String password, String name, String surname) {
         Student student=this.studentRepository.findById(index).orElseThrow(StudentNotFound::new);
         student.setEmail(email);
         student.setPassword(password);
         student.setName(name);
         student.setSurname(surname);
-        student.setRole(role);
         return Optional.of(this.studentRepository.save(student));
     }
 

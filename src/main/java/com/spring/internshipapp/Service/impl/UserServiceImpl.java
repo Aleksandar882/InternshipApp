@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
             throw new PasswordsDoNotMatchException();
         if(this.userRepository.findByEmail(email).isPresent())
             throw new EmailAlreadyExistsException(email);
-        User user = new User(email,passwordEncoder.encode(password));
+        User user = new User();
         Student student= new Student();
         Role role=Role.ROLE_STUDENT;
         student.setRole(role);
@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
             throw new PasswordsDoNotMatchException();
         if(this.userRepository.findByEmail(email).isPresent())
             throw new EmailAlreadyExistsException(email);
-        User user = new User(email,passwordEncoder.encode(password));
+        User user = new User();
         Company company= new Company();
         Role role=Role.ROLE_COMPANY;
         company.setRole(role);
