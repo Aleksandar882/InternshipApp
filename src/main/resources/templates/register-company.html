@@ -56,11 +56,12 @@
         .accountnamestyle{
             list-style-type: none;
             text-decoration: none;
-            color: orangered;
+            color: #f3f3f3;
             padding: 0 10px;
             margin-right: 5px;
         }
         .usericonstyle{
+            color: #f3f3f3;
             margin-left: 10px;
         }
         .custom-navbar{
@@ -177,6 +178,15 @@
                     <input type="password" id="repeatPassword" name="repeatPassword" class="form-control"
                            placeholder="Потврдете лозинка" required="">
                 </p>
+                <div class="error alert alert-danger" th:if="${ param.error!=null && param.error[0] == 'EmailAlreadyExistsException'}">
+                    Мејлот што го внесовте веќе е искористен
+                </div>
+                <div class="error alert alert-danger" th:if="${ param.error!=null && param.error[0] == 'InvalidArgumentsException'}">
+                    Ве молиме внесете валидни аргументи
+                </div>
+                <div class="error alert alert-danger" th:if="${ param.error!=null && param.error[0] == 'PasswordsDoNotMatchException'}">
+                    Лозинките што ги внесовте не се совпаѓаат
+                </div>
                 <button class="btn btn-lg btn-block bttns" type="submit">Потврда</button>
             </form>
             <a href="/login" class="btn btn-block bttns">Веќе имате профил? Логирајте се тука!</a>

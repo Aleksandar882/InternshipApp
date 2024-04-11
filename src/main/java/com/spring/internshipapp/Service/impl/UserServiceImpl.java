@@ -1,10 +1,7 @@
 package com.spring.internshipapp.Service.impl;
 
 import com.spring.internshipapp.Model.Company;
-import com.spring.internshipapp.Model.Exceptions.InvalidEmailException;
-import com.spring.internshipapp.Model.Exceptions.InvalidEmailOrPasswordException;
-import com.spring.internshipapp.Model.Exceptions.PasswordsDoNotMatchException;
-import com.spring.internshipapp.Model.Exceptions.EmailAlreadyExistsException;
+import com.spring.internshipapp.Model.Exceptions.*;
 import com.spring.internshipapp.Model.Role;
 import com.spring.internshipapp.Model.Student;
 import com.spring.internshipapp.Model.User;
@@ -39,7 +36,9 @@ public class UserServiceImpl implements UserService {
         if (!password.equals(repeatPassword))
             throw new PasswordsDoNotMatchException();
         if(this.userRepository.findByEmail(email).isPresent())
-            throw new EmailAlreadyExistsException(email);
+            throw new EmailAlreadyExistsException();
+        if(this.studentRepository.findByIndex(index).isPresent())
+            throw new IndexAlreadyExistsException();
         User user = new User();
         Student student= new Student();
         Role role=Role.ROLE_STUDENT;
@@ -59,7 +58,7 @@ public class UserServiceImpl implements UserService {
         if (!password.equals(repeatPassword))
             throw new PasswordsDoNotMatchException();
         if(this.userRepository.findByEmail(email).isPresent())
-            throw new EmailAlreadyExistsException(email);
+            throw new EmailAlreadyExistsException();
         User user = new User();
         Company company= new Company();
         Role role=Role.ROLE_COMPANY;

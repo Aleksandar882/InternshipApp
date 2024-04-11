@@ -1,5 +1,7 @@
 package com.spring.internshipapp.Web;
 
+import com.spring.internshipapp.Model.Exceptions.EmailAlreadyExistsException;
+import com.spring.internshipapp.Model.Exceptions.IndexAlreadyExistsException;
 import com.spring.internshipapp.Model.Exceptions.InvalidArgumentsException;
 import com.spring.internshipapp.Model.Exceptions.PasswordsDoNotMatchException;
 import com.spring.internshipapp.Service.AuthService;
@@ -44,7 +46,7 @@ public class RegisterController {
         try {
             this.userService.register(index,name,surname,email, password, repeatPassword);
             return "redirect:/login";
-        } catch (InvalidArgumentsException | PasswordsDoNotMatchException exception) {
+        } catch (InvalidArgumentsException | PasswordsDoNotMatchException | EmailAlreadyExistsException | IndexAlreadyExistsException exception) {
             return "redirect:/register?error=" + exception.getMessage();
         }
     }
@@ -72,7 +74,7 @@ public class RegisterController {
         try {
             this.userService.registerCompany(name,description,address,number,image_url,email,password,repeatPassword);
             return "redirect:/login";
-        } catch (InvalidArgumentsException | PasswordsDoNotMatchException exception) {
+        } catch (InvalidArgumentsException | PasswordsDoNotMatchException | EmailAlreadyExistsException exception) {
             return "redirect:/register-company?error=" + exception.getMessage();
         }
     }
