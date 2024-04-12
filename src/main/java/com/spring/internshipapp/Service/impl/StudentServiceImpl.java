@@ -1,11 +1,14 @@
 package com.spring.internshipapp.Service.impl;
 
-import com.spring.internshipapp.Model.Company;
-import com.spring.internshipapp.Model.Exceptions.CompanyNotFound;
+import com.spring.internshipapp.Model.Exceptions.InternshipNotFound;
 import com.spring.internshipapp.Model.Exceptions.StudentNotFound;
-import com.spring.internshipapp.Model.Role;
+import com.spring.internshipapp.Model.Exceptions.UserNotFoundException;
+import com.spring.internshipapp.Model.Internship;
 import com.spring.internshipapp.Model.Student;
+import com.spring.internshipapp.Model.User;
+import com.spring.internshipapp.Repository.InternshipRepository;
 import com.spring.internshipapp.Repository.StudentRepository;
+import com.spring.internshipapp.Repository.UserRepository;
 import com.spring.internshipapp.Service.StudentService;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +19,13 @@ import java.util.Optional;
 public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;
+    private final InternshipRepository internshipRepository;
+    private final UserRepository userRepository;
 
-    public StudentServiceImpl(StudentRepository studentRepository) {
+    public StudentServiceImpl(StudentRepository studentRepository, InternshipRepository internshipRepository, UserRepository userRepository) {
         this.studentRepository = studentRepository;
+        this.internshipRepository = internshipRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -45,6 +52,15 @@ public class StudentServiceImpl implements StudentService {
         student.setName(name);
         student.setSurname(surname);
         return Optional.of(this.studentRepository.save(student));
+    }
+
+    @Override
+    public Student addInternship(String email, Long internshipId) {
+        Student student = this.studentRepository.findByEmail(email)
+                .orElseThrow(UserNotFoundException::new);
+        Internship internship = this.internshipRepository.findById(internshipId).orElseThrow(InternshipNotFound::new);
+        student.setInternship(internship);
+        return this.studentRepository.save(student);
     }
 
     @Override

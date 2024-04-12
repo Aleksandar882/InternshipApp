@@ -15,6 +15,8 @@ public interface StudentService {
 
     Optional<Student> updateStudent(Long index,String email, String password, String name, String surname);
 
+    Student addInternship(String email, Long internshipId);
+
     boolean delete(Long index);
 
 
