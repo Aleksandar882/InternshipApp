@@ -18,6 +18,38 @@
             width: 100%;
             border-color: grey;
         }
+        .width1 {
+            width: 27rem;
+            background: #f3f3f3;
+            border-radius: 7px;
+            padding: 1rem;
+            margin-top: 5vh;
+        }
+
+        body {
+            background-color: rgb(24, 25, 26);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        a {
+            text-decoration: none;
+        }
+        .linkovi {
+            text-decoration: none;
+            color: white;
+            padding: 0 10px;
+        }
+
+        .lists {
+            list-style-type: none;
+        }
+
+        .bttns {
+            color: white;
+        }
         .custom-username{
             list-style: none;
         }
@@ -29,15 +61,9 @@
             margin-right: 5px;
         }
         .usericonstyle{
-            margin-left: 10px;
             color: #f3f3f3;
+            margin-left: 10px;
         }
-        .card-img-top {
-            width: 100%;
-            height: 15vw;
-            object-fit: cover;
-        }
-        body{padding-top: 70px;}
         .custom-navbar{
             background-color: #286090;
         }
@@ -63,7 +89,7 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg custom-navbar fixed-top">
+<nav class="navbar navbar-expand-lg custom-navbar ">
     <div class="container-fluid">
         <a class="navbar-brand" href="/internships">Финки пракси</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +100,7 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/internships">Пракси</a>
                 </li>
-                <li class="nav-item active" aria-current="page">
+                <li class="nav-item">
                     <a class="nav-link" href="/companies">Компании</a>
                 </li>
                 <li class="nav-item">
@@ -83,7 +109,7 @@
                 <li class="nav-item">
                     <a href="/internships/add" class="nav-link" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN') or #strings.contains(#authentication.principal.authorities,'ROLE_COMPANY'))}">Додади нова пракса</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item active" aria-current="page">
                     <a href="/register-coordinator" class="nav-link" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN'))}">Регистрација на координатор</a>
                 </li>
                 <li class="nav-item">
@@ -95,7 +121,7 @@
                 <li class="nav-item">
                     <a class="nav-link" sec:authorize="!isAuthenticated()" href="/register">Регистрација на студент</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item active" aria-current="page">
                     <a class="nav-link" sec:authorize="!isAuthenticated()" href="/register-company">Регистрација на компанија</a>
                 </li>
             </ul>
@@ -110,31 +136,53 @@
 </nav>
 
 <div class="container">
-    <div class="row">
-
-
-        <div id="scrollto" class="col-lg-4 mt-5" th:each="company: ${companies}">
-            <div class="card text-center">
-                <img class="card-img-top" th:src="@{${company.imageUrl}}" alt="Card image cap">
-                <div class="card-body">
-                    <h5 class="card-title" th:text="${company.name}"></h5>
-                    <hr class="custom-hr">
-                    <span>За нас:</span>
-                    <p class="card-text" th:text="${company.description}"></p>
-                    <hr class="custom-hr">
-                    <span>Адреса:</span>
-                    <span class="card-text" th:text="${company.address}"></span>
-                    <hr class="custom-hr">
-                    <span>Контакт телефон:</span>
-                    <p class="card-text" th:text="${company.number}"></p>
-                    <hr class="custom-hr">
+    <h1 th:if="${hasError}" th:text="${error}"></h1>
+</div>
+<div class="container">
+    <div class="d-flex text-center justify-content-center">
+        <div class="width1 bg-dark" >
+            <form class="form-signin mt-xl-5" method="post" action="/register-coordinator">
+                <h2 class="form-signin-heading">Регистрација на координатор</h2>
+                <br>
+                <p>
+                    <label for="name" class="sr-only">Име:</label>
+                    <input type="text" id="name" name="name" class="form-control" placeholder="Име" required=""
+                           autofocus="">
+                </p>
+                <p>
+                    <label for="surname" class="sr-only">Презиме:</label>
+                    <input type="text" id="surname" name="surname" class="form-control" placeholder="Презиме" required=""
+                           autofocus="">
+                </p>
+                <p>
+                    <label for="email" class="sr-only">Електронска пошта:</label>
+                    <input type="text" id="email" name="email" class="form-control" placeholder="Електронска пошта" required=""
+                           autofocus="">
+                </p>
+                <p>
+                    <label for="password" class="sr-only">Лозинка:</label>
+                    <input type="password" id="password" name="password" class="form-control"
+                           placeholder="Лозинка" required="">
+                </p>
+                <p>
+                    <label for="repeatPassword" class="sr-only">Потврдете лозинка:</label>
+                    <input type="password" id="repeatPassword" name="repeatPassword" class="form-control"
+                           placeholder="Потврдете лозинка" required="">
+                </p>
+                <div class="error alert alert-danger" th:if="${ param.error!=null && param.error[0] == 'EmailAlreadyExistsException'}">
+                    Мејлот што го внесовте веќе е искористен
                 </div>
-            </div>
+                <div class="error alert alert-danger" th:if="${ param.error!=null && param.error[0] == 'InvalidArgumentsException'}">
+                    Ве молиме внесете валидни аргументи
+                </div>
+                <div class="error alert alert-danger" th:if="${ param.error!=null && param.error[0] == 'PasswordsDoNotMatchException'}">
+                    Лозинките што ги внесовте не се совпаѓаат
+                </div>
+                <button class="btn btn-lg btn-block bttns" type="submit">Потврда</button>
+            </form>
+            <a href="/login" class="btn btn-block bttns">Веќе имате профил? Логирајте се тука!</a>
         </div>
-
-
     </div>
 </div>
-
 </body>
 </html>

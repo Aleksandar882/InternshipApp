@@ -9,31 +9,22 @@ import java.util.List;
 @Data
 @Entity
 @NoArgsConstructor
-public class Coordinator {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Coordinator extends User {
 
     private String name;
 
     private String surname;
 
-    private String email;
-
-    private String password;
-
-    @Enumerated(value = EnumType.STRING)
-    private Role role;
-
     @OneToMany(mappedBy = "coordinator", fetch = FetchType.EAGER)
     private List<Student> students;
 
-    public Coordinator(String name, String surname, String email, String password, Role role, List<Student> students) {
+    public Coordinator(String email,String password,Role role) {
+        super(email,password,role);
+    }
+
+    public Coordinator(String name, String surname,List<Student> students) {
         this.name = name;
         this.surname = surname;
-        this.email = email;
-        this.password=password;
-        this.role = role;
         this.students = students;
     }
 }

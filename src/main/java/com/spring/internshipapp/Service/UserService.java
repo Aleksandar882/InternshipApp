@@ -9,6 +9,8 @@ public interface UserService extends UserDetailsService {
 
     User registerCompany(String name, String description, String address, Integer number,String image_url, String email, String password, String repeatPassword);
 
+    User registerCoordinator(String name, String surname,String email, String password, String repeatPassword);
+
     User FindByEmail(String email);
 
 }

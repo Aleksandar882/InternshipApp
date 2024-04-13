@@ -1,11 +1,9 @@
 package com.spring.internshipapp.Service.impl;
 
-import com.spring.internshipapp.Model.Company;
+import com.spring.internshipapp.Model.*;
 import com.spring.internshipapp.Model.Exceptions.*;
-import com.spring.internshipapp.Model.Role;
-import com.spring.internshipapp.Model.Student;
-import com.spring.internshipapp.Model.User;
 import com.spring.internshipapp.Repository.CompanyRepository;
+import com.spring.internshipapp.Repository.CoordinatorRepository;
 import com.spring.internshipapp.Repository.StudentRepository;
 import com.spring.internshipapp.Repository.UserRepository;
 import com.spring.internshipapp.Service.UserService;
@@ -21,12 +19,14 @@ public class UserServiceImpl implements UserService {
     private final StudentRepository studentRepository;
     private final PasswordEncoder passwordEncoder;
     private final CompanyRepository companyRepository;
+    private final CoordinatorRepository coordinatorRepository;
 
-    public UserServiceImpl(UserRepository userRepository, StudentRepository studentRepository, PasswordEncoder passwordEncoder, CompanyRepository companyRepository) {
+    public UserServiceImpl(UserRepository userRepository, StudentRepository studentRepository, PasswordEncoder passwordEncoder, CompanyRepository companyRepository, CoordinatorRepository coordinatorRepository) {
         this.userRepository = userRepository;
         this.studentRepository = studentRepository;
         this.passwordEncoder = passwordEncoder;
         this.companyRepository = companyRepository;
+        this.coordinatorRepository = coordinatorRepository;
     }
 
     @Override
@@ -41,12 +41,14 @@ public class UserServiceImpl implements UserService {
             throw new IndexAlreadyExistsException();
         User user = new User();
         Student student= new Student();
+        Coordinator coordinator=this.coordinatorRepository.findById(6L).orElseThrow(CoordinatorNotFound::new);
         Role role=Role.ROLE_STUDENT;
         student.setRole(role);
         student.setIndex(index);
         student.setName(name);
         student.setSurname(surname);
         student.setEmail(email);
+        student.setCoordinator(coordinator);
         student.setPassword(passwordEncoder.encode(password));
         return studentRepository.save(student);
     }
@@ -71,6 +73,25 @@ public class UserServiceImpl implements UserService {
         company.setEmail(email);
         company.setPassword(passwordEncoder.encode(password));
         return companyRepository.save(company);
+    }
+
+    @Override
+    public User registerCoordinator(String name, String surname, String email, String password, String repeatPassword) {
+        if (email==null || email.isEmpty()  || password==null || password.isEmpty())
+            throw new InvalidEmailOrPasswordException();
+        if (!password.equals(repeatPassword))
+            throw new PasswordsDoNotMatchException();
+        if(this.userRepository.findByEmail(email).isPresent())
+            throw new EmailAlreadyExistsException();
+        User user = new User();
+        Coordinator coordinator= new Coordinator();
+        Role role=Role.ROLE_COORDINATOR;
+        coordinator.setRole(role);
+        coordinator.setName(name);
+        coordinator.setSurname(surname);
+        coordinator.setEmail(email);
+        coordinator.setPassword(passwordEncoder.encode(password));
+        return coordinatorRepository.save(coordinator);
     }
 
     @Override

@@ -79,4 +79,30 @@ public class RegisterController {
         }
     }
 
+
+    @GetMapping("/register-coordinator")
+    public String getRegisterPageCoordinator(@RequestParam(required = false) String error, Model model) {
+        if (error != null && !error.isEmpty()) {
+            model.addAttribute("hasError", true);
+            model.addAttribute("error", error);
+        }
+
+        return "register-coordinator.html";
+    }
+
+    @PostMapping("/register-coordinator")
+    public String registerCoordinator(
+            @RequestParam String name,
+            @RequestParam String surname,
+            @RequestParam String email,
+            @RequestParam String password,
+            @RequestParam String repeatPassword) {
+        try {
+            this.userService.registerCoordinator(name,surname,email,password,repeatPassword);
+            return "redirect:/login";
+        } catch (InvalidArgumentsException | PasswordsDoNotMatchException | EmailAlreadyExistsException exception) {
+            return "redirect:/register-coordinator?error=" + exception.getMessage();
+        }
+    }
+
 }

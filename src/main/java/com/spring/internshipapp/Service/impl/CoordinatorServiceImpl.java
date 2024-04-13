@@ -24,9 +24,9 @@ public class CoordinatorServiceImpl implements CoordinatorService {
     }
 
     @Override
-    public Optional<Coordinator> addNewCoordinator(String name, String surname, String email, String password, Role role, List<Long> studentsId) {
+    public Optional<Coordinator> addNewCoordinator(String name, String surname, List<Long> studentsId) {
         List<Student> students = this.studentRepository.findAllById(studentsId);
-        Coordinator coordinator = new Coordinator(name,surname,email,password,role,students);
+        Coordinator coordinator = new Coordinator(name,surname,students);
         return Optional.of(this.coordinatorRepository.save(coordinator));
     }
 
@@ -41,14 +41,11 @@ public class CoordinatorServiceImpl implements CoordinatorService {
     }
 
     @Override
-    public Optional<Coordinator> updateCoordinator(Long id, String name, String surname, String email, String password, Role role, List<Long> studentsId) {
+    public Optional<Coordinator> updateCoordinator(Long id, String name, String surname,List<Long> studentsId) {
         List<Student> students = this.studentRepository.findAllById(studentsId);
         Coordinator coordinator= this.coordinatorRepository.findById(id).orElseThrow(CoordinatorNotFound::new);
         coordinator.setName(name);
         coordinator.setSurname(surname);
-        coordinator.setEmail(email);
-        coordinator.setPassword(password);
-        coordinator.setRole(role);
         coordinator.setStudents(students);
         return Optional.of(this.coordinatorRepository.save(coordinator));
     }
