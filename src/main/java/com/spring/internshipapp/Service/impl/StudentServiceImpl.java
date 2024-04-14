@@ -64,6 +64,11 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    public List<Student> getAllByCompany(String companyEmail) {
+        return this.studentRepository.findAllByInternshipCompanyEmail(companyEmail);
+    }
+
+    @Override
     public boolean delete(Long index) {
         this.studentRepository.deleteById(index);
         return this.studentRepository.findById(index).isEmpty();

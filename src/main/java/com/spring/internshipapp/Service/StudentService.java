@@ -17,6 +17,8 @@ public interface StudentService {
 
     Student addInternship(String email, Long internshipId);
 
+    List<Student>getAllByCompany(String companyEmail);
+
     boolean delete(Long index);
 
 
