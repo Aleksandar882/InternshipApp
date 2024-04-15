@@ -30,9 +30,15 @@ public class ListStudentsController {
     }
 
     @GetMapping({"/students"})
-    public String showList(Model model) {
-        List<Student> students;
-        students = this.studentService.getAllStudents();
+    public String showList(@RequestParam(required = false) String error,
+                           HttpServletRequest req,
+                           Model model) {
+        if (error != null && !error.isEmpty()) {
+            model.addAttribute("hasError", true);
+            model.addAttribute("error", error);
+        }
+        String username = req.getRemoteUser();
+        List<Student> students = this.studentService.getAllByCoordinator(username);
         List<Company> companies=this.companyService.getAllCompanies();
         List<Internship> internships=this.internshipService.getAllInternships();
         model.addAttribute("students", students);

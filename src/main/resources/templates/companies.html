@@ -81,7 +81,16 @@
                     <a href="/students" class="nav-link" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN') or #strings.contains(#authentication.principal.authorities,'ROLE_COORDINATOR'))}">Студенти</a>
                 </li>
                 <li class="nav-item">
-                    <a href="/internships/add" class="nav-link" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN') or #strings.contains(#authentication.principal.authorities,'ROLE_COMPANY'))}">Додади нова пракса</a>
+                    <a href="/students-company" class="nav-link" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN') or #strings.contains(#authentication.principal.authorities,'ROLE_COMPANY'))}">Пријавени Студенти</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/internships/add" class="nav-link active" aria-current="page" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN'))}">Додади нова пракса</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/internships-company/add" class="nav-link active" aria-current="page" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_COMPANY'))}">Додади нова пракса</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/internships-company" class="nav-link active" aria-current="page" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_COMPANY'))}">Мои Пракси</a>
                 </li>
                 <li class="nav-item">
                     <a href="/register-coordinator" class="nav-link" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN'))}">Регистрација на координатор</a>

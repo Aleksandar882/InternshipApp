@@ -13,6 +13,8 @@ public interface CompanyService {
 
     Company getCompanyById(Long id);
 
+    Company getCompanyByName(String companyEmail);
+
     Optional<Company> updateCompany(Long id,String name, Integer number, String description, String imageUrl, String address);
 
     boolean delete(Long id);

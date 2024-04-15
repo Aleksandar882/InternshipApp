@@ -41,15 +41,21 @@ public class UserServiceImpl implements UserService {
             throw new IndexAlreadyExistsException();
         User user = new User();
         Student student= new Student();
-        Coordinator coordinator=this.coordinatorRepository.findById(6L).orElseThrow(CoordinatorNotFound::new);
         Role role=Role.ROLE_STUDENT;
         student.setRole(role);
         student.setIndex(index);
         student.setName(name);
         student.setSurname(surname);
         student.setEmail(email);
-        student.setCoordinator(coordinator);
         student.setPassword(passwordEncoder.encode(password));
+        long lastDigit=index % 10;
+        Coordinator coordinator;
+        if(lastDigit==0 || lastDigit==1 || lastDigit==2 || lastDigit==3 || lastDigit==4) {
+            coordinator = this.coordinatorRepository.findById(6L).orElseThrow(CoordinatorNotFound::new);
+        }else {
+            coordinator = this.coordinatorRepository.findById(8L).orElseThrow(CoordinatorNotFound::new);
+        }
+        student.setCoordinator(coordinator);
         return studentRepository.save(student);
     }
 

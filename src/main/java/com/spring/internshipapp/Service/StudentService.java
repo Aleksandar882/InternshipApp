@@ -19,6 +19,8 @@ public interface StudentService {
 
     List<Student>getAllByCompany(String companyEmail);
 
+    List<Student>getAllByCoordinator(String companyEmail);
+
     boolean delete(Long index);
 
 

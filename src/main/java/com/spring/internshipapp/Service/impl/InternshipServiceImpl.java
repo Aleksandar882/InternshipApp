@@ -53,6 +53,11 @@ public class InternshipServiceImpl implements InternshipService {
     }
 
     @Override
+    public List<Internship> getAllByCompany(String companyEmail) {
+        return this.internshipRepository.findAllByCompanyEmail(companyEmail);
+    }
+
+    @Override
     public boolean delete(Long id) {
         this.internshipRepository.deleteById(id);
         return this.internshipRepository.findById(id).isEmpty();

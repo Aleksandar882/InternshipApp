@@ -82,7 +82,7 @@
                 <li class="nav-item">
                     <a href="/students" class="nav-link" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN') or #strings.contains(#authentication.principal.authorities,'ROLE_COORDINATOR'))}">Студенти</a>
                 </li>
-                <li class="nav-item active" aria-current="page">
+                <li class="nav-item">
                     <a href="/students-company" class="nav-link" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN') or #strings.contains(#authentication.principal.authorities,'ROLE_COMPANY'))}">Пријавени Студенти</a>
                 </li>
                 <li class="nav-item">
@@ -91,7 +91,7 @@
                 <li class="nav-item">
                     <a href="/internships-company/add" class="nav-link active" aria-current="page" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_COMPANY'))}">Додади нова пракса</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item active" aria-current="page">
                     <a href="/internships-company" class="nav-link active" aria-current="page" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_COMPANY'))}">Мои Пракси</a>
                 </li>
                 <li class="nav-item">
@@ -124,21 +124,30 @@
     <div class="row">
 
 
-        <div id="scrollto" class="col-lg-4 mt-5" th:each="student: ${students}">
+        <div id="scrollto" class="col-lg-4 mt-5" th:each="internship: ${internships}">
             <div class="card text-center">
+                <img class="card-img-top" th:src="@{${internship.company.imageUrl}}" alt="Card image cap">
                 <div class="card-body">
-                    <span>Име:</span>
-                    <h5 class="card-title" th:text="${student.name}"></h5>
+                    <h5 class="card-title" th:text="${internship.position}"></h5>
                     <hr class="custom-hr">
-                    <span>Презиме:</span>
-                    <span class="card-text" th:text="${student.surname}"></span>
+                    <span>Локација:</span>
+                    <span class="card-text" th:text="${internship.location}"></span>
                     <hr class="custom-hr">
-                    <span>Индекс:</span>
-                    <p class="card-text" th:text="${student.index}"></p>
+                    <p class="card-text" th:text="${internship.description}"></p>
                     <hr class="custom-hr">
-                    <span>Пракса:</span>
-                    <p class="card-text" th:text="${student.internship?.position}"></p>
+                    <span>Времетраење:</span>
+                    <p class="card-text" th:text="${internship.timePeriod}"></p>
                     <hr class="custom-hr">
+                    <span>Компанија:</span>
+                    <span class="card-text" th:text="${internship.company.name}"></span>
+                    <hr class="custom-hr">
+
+                    <!-- ForumUsersController.delete (Only ADMIN can see this element)-->
+                    <form class="custom-inline" method="POST" th:action="@{'/internships-company/{id}/delete' (id=${internship.id})}" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_COMPANY'))}">
+                        <button type="submit" class="btn">Избриши</button>
+                    </form>
+                    <!-- ForumUsersController.showEdit (Only ADMIN can see this element)-->
+                    <a th:href="@{'/internships-company/{id}/edit' (id=${internship.id})}"  class="btn" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_COMPANY'))}">Ажурирај </a>
                 </div>
             </div>
         </div>

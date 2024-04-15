@@ -83,7 +83,16 @@
                     <a href="/students" class="nav-link" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN') or #strings.contains(#authentication.principal.authorities,'ROLE_COORDINATOR'))}">Студенти</a>
                 </li>
                 <li class="nav-item">
-                    <a href="/internships/add" class="nav-link" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN') or #strings.contains(#authentication.principal.authorities,'ROLE_COMPANY'))}">Додади нова пракса</a>
+                    <a href="/students-company" class="nav-link" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN') or #strings.contains(#authentication.principal.authorities,'ROLE_COMPANY'))}">Пријавени Студенти</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/internships/add" class="nav-link active" aria-current="page" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN'))}">Додади нова пракса</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/internships-company/add" class="nav-link active" aria-current="page" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_COMPANY'))}">Додади нова пракса</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/internships-company" class="nav-link active" aria-current="page" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_COMPANY'))}">Мои Пракси</a>
                 </li>
                 <li class="nav-item">
                     <a href="/register-coordinator" class="nav-link" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN'))}">Регистрација на координатор</a>
@@ -134,12 +143,12 @@
                     <hr class="custom-hr">
 
                     <!-- ForumUsersController.delete (Only ADMIN can see this element)-->
-                    <form class="custom-inline" method="POST" th:action="@{'/internships/{id}/delete' (id=${internship.id})}">
+                    <form class="custom-inline" method="POST" th:action="@{'/internships/{id}/delete' (id=${internship.id})}" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN'))}">
                         <button type="submit" class="btn">Избриши</button>
                     </form>
                     <!-- ForumUsersController.showEdit (Only ADMIN can see this element)-->
-                    <a th:href="@{'/internships/{id}/edit' (id=${internship.id})}"  class="btn">Ажурирај</a>
-                    <form class="custom-inline" th:action="@{'/internship-add/add-internship/{id}' (id=${internship.getId()})}"
+                    <a th:href="@{'/internships/{id}/edit' (id=${internship.id})}"  class="btn" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN'))}">Ажурирај </a>
+                    <form class="custom-inline" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN') or #strings.contains(#authentication.principal.authorities,'ROLE_STUDENT'))}" th:action="@{'/internship-add/add-internship/{id}' (id=${internship.getId()})}"
                            th:method="POST">
                          <button type="submit"
                                  class="btn">Пријави се</button>

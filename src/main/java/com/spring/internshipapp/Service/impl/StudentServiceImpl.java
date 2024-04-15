@@ -69,6 +69,11 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    public List<Student> getAllByCoordinator(String coordinatorEmail) {
+        return this.studentRepository.findAllByCoordinatorEmail(coordinatorEmail);
+    }
+
+    @Override
     public boolean delete(Long index) {
         this.studentRepository.deleteById(index);
         return this.studentRepository.findById(index).isEmpty();

@@ -19,4 +19,6 @@ public interface StudentRepository extends JpaRepository<Student,Long> {
     List<Student>findAllByInternshipCompany(@Param("mail")String companyEmail);
 
     List<Student>findAllByInternshipCompanyEmail(String companyEmail);
+
+    List<Student>findAllByCoordinatorEmail(String coordinatorEmail);
 }
