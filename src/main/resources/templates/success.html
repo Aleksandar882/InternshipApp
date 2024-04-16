@@ -10,6 +10,9 @@
 
     <style>
 
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap')
+
+
         .custom-inline{
             display: inline!important;
         }
@@ -37,7 +40,8 @@
             height: 15vw;
             object-fit: cover;
         }
-        body{padding-top: 70px;}
+        body{padding-top: 70px;
+            background-color: #e3f2fd;}
 
         .custom-navbar{
             background-color: #286090;
@@ -56,6 +60,48 @@
         .navbar-nav .nav-item:hover .nav-link {
             color: #286090;
             background-color: #f3f3f3;
+        }
+        .modal-box{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 380px;
+            width: 100%;
+            border-radius: 25px;
+            padding: 30px 20px;
+            background-color: #f3f3f3;
+            opacity: 1;
+            position: absolute;
+            top: 30%;
+            left: 39%;
+            right: 50%;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        }
+        .modal-box i{
+            font-size: 100px;
+            color: #286090;
+        }
+        .modal-box h2{
+            font-family: "Inter", sans-serif;
+            margin-top: 20px;
+            font-size: 25px;
+            font-weight: 500;
+            color: #333;
+        }
+        .modal-box h3{
+            font-family: "Inter", sans-serif;
+            font-size: 16px;
+            font-weight: 400;
+            color: #333;
+            text-align: center;
+        }
+        .modal-box .buttons{
+            margin-top: 20px;
+        }
+        .btn-primary{
+            color: #f3f3f3;
+            background-color: #286090;
+            border-color: #286090;
         }
 
 
@@ -120,9 +166,17 @@
 
 </nav>
 
-<div class="container">
-   <p>Пријавувањето е успешно</p>
+<div>
+<section>
+    <div class="modal-box">
+        <i class="fa fa-check-circle" aria-hidden="true"></i>
+        <h2>Пријавувањето е успешно</h2>
+        <h3>Ви благодариме што се пријавивте за нашата пракса!</h3>
+        <div class="buttons">
+            <a class=" btn btn-primary" href='/internships'>Во ред</a>
+        </div>
+    </div>
+</section>
 </div>
-
 </body>
 </html>

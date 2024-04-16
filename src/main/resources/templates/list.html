@@ -37,7 +37,9 @@
             height: 15vw;
             object-fit: cover;
         }
-        body{padding-top: 70px;}
+        body{padding-top: 70px;
+            background-color: #e3f2fd;
+        }
 
         .custom-navbar{
             background-color: #286090;
@@ -57,8 +59,11 @@
             color: #286090;
             background-color: #f3f3f3;
         }
-
-
+        .btn-primary{
+            color: #f3f3f3;
+            background-color: #286090;
+            border-color: #286090;
+        }
 
     </style>
 
@@ -144,17 +149,15 @@
 
                     <!-- ForumUsersController.delete (Only ADMIN can see this element)-->
                     <form class="custom-inline" method="POST" th:action="@{'/internships/{id}/delete' (id=${internship.id})}" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN'))}">
-                        <button type="submit" class="btn">Избриши</button>
+                        <button type="submit" class="btn btn-primary">Избриши</button>
                     </form>
                     <!-- ForumUsersController.showEdit (Only ADMIN can see this element)-->
-                    <a th:href="@{'/internships/{id}/edit' (id=${internship.id})}"  class="btn" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN'))}">Ажурирај </a>
+                    <a th:href="@{'/internships/{id}/edit' (id=${internship.id})}"  class="btn btn-primary" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN'))}">Ажурирај </a>
                     <form class="custom-inline" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN') or #strings.contains(#authentication.principal.authorities,'ROLE_STUDENT'))}" th:action="@{'/internship-add/add-internship/{id}' (id=${internship.getId()})}"
                            th:method="POST">
                          <button type="submit"
-                                 class="btn">Пријави се</button>
+                                 class="btn btn-primary">Пријави се</button>
                      </form>
-
-
                  </div>
              </div>
          </div>
@@ -162,6 +165,5 @@
 
      </div>
  </div>
-
  </body>
  </html>

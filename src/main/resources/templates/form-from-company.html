@@ -8,6 +8,9 @@
 
     <style>
 
+        body{
+            background-color: #e3f2fd;}
+
         .custom-inline{
             display: inline!important;
         }
@@ -47,6 +50,11 @@
         .navbar-nav .nav-item:hover .nav-link {
             color: #286090;
             background-color: #f3f3f3;
+        }
+        .btn-primary{
+            color: #f3f3f3;
+            background-color: #286090;
+            border-color: #286090;
         }
 
 
@@ -139,8 +147,8 @@
                        placeholder="Времетраење на праксата" required th:value="${internship?.timePeriod}">
             </div>
 
-            <button class="btn" id="submit" type="submit">Внеси</button>
-            <a id="back" href="/internships" type="button" class="btn">Почетна</a>
+            <button class="btn btn-primary" id="submit" type="submit">Внеси</button>
+            <a id="back" href="/internships" type="button" class="btn btn-primary">Почетна</a>
         </form>
 
     </div>

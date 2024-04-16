@@ -28,8 +28,8 @@
         }
 
         body {
-            background-color: rgb(24, 25, 26);
-            color: white;
+            background-color: #e3f2fd;
+            color: #333333;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -83,6 +83,12 @@
         .navbar-nav .nav-item:hover .nav-link {
             color: #286090;
             background-color: #f3f3f3;
+        }
+        .btn-primary{
+            color: #f3f3f3;
+            background-color: #286090;
+            border-color: #286090;
+            margin: 5px;
         }
 
 
@@ -148,10 +154,10 @@
 
 <div>
     <div class="d-flex text-center container justify-content-center">
-        <div class="width1 bg-dark">
+        <div class="width1">
 
             <form class="form-signin custom-inline" method="post" action="/login">
-                <h2 class="form-signin-heading align-self-top">Логин</h2>
+                <h2 class="form-signin-heading align-self-top">Најава</h2>
                 <br>
                 <p>
                     <label for="email" class="sr-only">Електронска пошта</label>
@@ -170,10 +176,10 @@
                 <div th:if="${param.error}" class="alert alert-danger">
                     Погрешен мејл или погрешна лозинка
                 </div>
-                <button id="submit" class="btn bttns" type="submit">Потврда</button>
+                <button id="submit" class="btn btn-primary" type="submit">Потврда</button>
             </form>
-            <a href="/register" class="btn bttns">Регистрирајте нов профил</a>
-            <a href="/register-company" class="btn bttns">Регистрирајте нова компанија</a>
+            <a href="/register" class="btn btn-primary">Регистрирајте нов профил</a>
+            <a href="/register-company" class="btn btn-primary">Регистрирајте нова компанија</a>
         </div>
     </div>
 </div>

@@ -27,8 +27,8 @@
         }
 
         body {
-            background-color: rgb(24, 25, 26);
-            color: white;
+            background-color: #e3f2fd;
+            color: #333333;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -81,6 +81,12 @@
         .navbar-nav .nav-item:hover .nav-link {
             color: #286090;
             background-color: #f3f3f3;
+        }
+        .btn-primary{
+            color: #f3f3f3;
+            background-color: #286090;
+            border-color: #286090;
+            margin: 5px;
         }
 
 
@@ -149,7 +155,7 @@
 </div>
 <div class="container">
     <div class="d-flex text-center justify-content-center">
-        <div class="width1 bg-dark" >
+        <div class="width1" >
             <form class="form-signin mt-xl-5" method="post" action="/register-company">
                 <h2 class="form-signin-heading">Регистрација на компанија</h2>
                 <br>
@@ -202,9 +208,9 @@
                 <div class="error alert alert-danger" th:if="${ param.error!=null && param.error[0] == 'PasswordsDoNotMatchException'}">
                     Лозинките што ги внесовте не се совпаѓаат
                 </div>
-                <button class="btn btn-lg btn-block bttns" type="submit">Потврда</button>
+                <button class="btn btn-lg btn-block btn-primary" type="submit">Потврда</button>
             </form>
-            <a href="/login" class="btn btn-block bttns">Веќе имате профил? Логирајте се тука!</a>
+            <a href="/login" class="btn btn-block btn-primary">Веќе имате профил? Логирајте се тука!</a>
         </div>
     </div>
 </div>

@@ -38,7 +38,5 @@ public class StudentController {
                 return "redirect:/internship-add/success?error=" + exception.getMessage();
             }
 
-
-
     }
 }
