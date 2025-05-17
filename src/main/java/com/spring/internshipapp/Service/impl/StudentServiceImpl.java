@@ -5,11 +5,11 @@ import com.spring.internshipapp.Model.Exceptions.StudentNotFound;
 import com.spring.internshipapp.Model.Exceptions.UserNotFoundException;
 import com.spring.internshipapp.Model.Internship;
 import com.spring.internshipapp.Model.Student;
-import com.spring.internshipapp.Model.User;
 import com.spring.internshipapp.Repository.InternshipRepository;
 import com.spring.internshipapp.Repository.StudentRepository;
 import com.spring.internshipapp.Repository.UserRepository;
 import com.spring.internshipapp.Service.StudentService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -54,6 +54,7 @@ public class StudentServiceImpl implements StudentService {
         return Optional.of(this.studentRepository.save(student));
     }
 
+    @Transactional
     @Override
     public Student addInternship(String email, Long internshipId) {
         Student student = this.studentRepository.findByEmail(email)
@@ -63,14 +64,21 @@ public class StudentServiceImpl implements StudentService {
         return this.studentRepository.save(student);
     }
 
+    @Transactional
     @Override
     public List<Student> getAllByCompany(String companyEmail) {
         return this.studentRepository.findAllByInternshipCompanyEmail(companyEmail);
     }
 
+    @Transactional
     @Override
     public List<Student> getAllByCoordinator(String coordinatorEmail) {
         return this.studentRepository.findAllByCoordinatorEmail(coordinatorEmail);
+    }
+
+    @Override
+    public Optional<Student> findById(Long id) {
+        return this.studentRepository.findById(id);
     }
 
     @Override

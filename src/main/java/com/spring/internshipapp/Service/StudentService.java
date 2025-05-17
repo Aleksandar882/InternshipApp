@@ -1,6 +1,5 @@
 package com.spring.internshipapp.Service;
 
-import com.spring.internshipapp.Model.Role;
 import com.spring.internshipapp.Model.Student;
 
 import java.util.List;
@@ -20,6 +19,8 @@ public interface StudentService {
     List<Student>getAllByCompany(String companyEmail);
 
     List<Student>getAllByCoordinator(String companyEmail);
+
+    Optional<Student> findById(Long id);
 
     boolean delete(Long index);
 

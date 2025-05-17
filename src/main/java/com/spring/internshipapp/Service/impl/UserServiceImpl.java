@@ -7,6 +7,7 @@ import com.spring.internshipapp.Repository.CoordinatorRepository;
 import com.spring.internshipapp.Repository.StudentRepository;
 import com.spring.internshipapp.Repository.UserRepository;
 import com.spring.internshipapp.Service.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -106,11 +107,12 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    @Transactional
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user=  this.userRepository.findByEmail(email).orElseThrow(InvalidEmailException::new);
-        UserDetails userDetails= new org.springframework.security.core.userdetails.User(
-                user.getUsername(), user.getPassword(),user.getAuthorities());
+        UserDetails userDetails= userRepository.findByEmail(email) // This should return Optional<com.spring.internshipapp.Model.User>
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
         return userDetails;
     }
 }

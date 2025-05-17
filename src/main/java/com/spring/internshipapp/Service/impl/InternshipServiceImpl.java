@@ -7,6 +7,7 @@ import com.spring.internshipapp.Model.Internship;
 import com.spring.internshipapp.Repository.CompanyRepository;
 import com.spring.internshipapp.Repository.InternshipRepository;
 import com.spring.internshipapp.Service.InternshipService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -52,6 +53,7 @@ public class InternshipServiceImpl implements InternshipService {
         return Optional.of(this.internshipRepository.save(internship));
     }
 
+    @Transactional
     @Override
     public List<Internship> getAllByCompany(String companyEmail) {
         return this.internshipRepository.findAllByCompanyEmail(companyEmail);

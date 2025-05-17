@@ -5,12 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="UTF-8">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-
-
     <style>
+        .journal-container { max-width: 800px; margin: 20px auto; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; }
+        textarea { width: 100%; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; padding: 10px; }
+        .message { padding: 10px; margin-bottom: 15px; border-radius: 3px; }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
 
-        .custom-inline{
+        custom-inline{
             display: inline!important;
         }
 
@@ -38,7 +41,8 @@
             object-fit: cover;
         }
         body{padding-top: 70px;
-            background-color: #e3f2fd;}
+            background-color: #e3f2fd;
+        }
 
         .custom-navbar{
             background-color: #286090;
@@ -65,14 +69,9 @@
             background-color: #286090;
             border-color: #286090;
         }
-
-
-
     </style>
-
 </head>
 <body>
-
 <nav class="navbar navbar-expand-lg custom-navbar fixed-top">
     <div class="container-fluid">
         <a class="navbar-brand" href="/internships">Финки пракси</a>
@@ -81,13 +80,13 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
+                <li class="nav-item" aria-current="page">
                     <a class="nav-link" href="/internships">Пракси</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/companies">Компании</a>
                 </li>
-                <li class="nav-item active" aria-current="page">
+                <li class="nav-item">
                     <a href="/students" class="nav-link" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN') or #strings.contains(#authentication.principal.authorities,'ROLE_COORDINATOR'))}">Студенти</a>
                 </li>
                 <li class="nav-item">
@@ -104,6 +103,9 @@
                 </li>
                 <li class="nav-item">
                     <a href="/register-coordinator" class="nav-link" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN'))}">Регистрација на координатор</a>
+                </li>
+                <li class="nav-item active" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_STUDENT'))}">
+                    <a class="nav-link" href="/my-journal">Дневник</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link " sec:authorize="!isAuthenticated()" href="/login">Најава</a>
@@ -127,46 +129,26 @@
     </div>
 
 </nav>
+<div>
+    <div class="journal-container">
+        <h1 th:text="${pageTitle ?: 'Дневник за студентска пракса'}">Дневник за студентска пракса</h1>
 
-<div class="container">
-    <div class="row">
+        <div th:if="${successMessage}" class="message success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="message error" th:text="${errorMessage}"></div>
 
-
-        <div id="scrollto" class="col-lg-4 mt-5" th:each="student: ${students}">
-            <div class="card text-center">
-                <div class="card-body">
-                    <span>Име:</span>
-                    <h5 class="card-title" th:text="${student.name}"></h5>
-                    <hr class="custom-hr">
-                    <span>Презиме:</span>
-                    <span class="card-text" th:text="${student.surname}"></span>
-                    <hr class="custom-hr">
-                    <span>Индекс:</span>
-                    <p class="card-text" th:text="${student.index}"></p>
-                    <hr class="custom-hr">
-                    <span>Пракса:</span>
-                    <p class="card-text" th:text="${student.internship?.position}"></p>
-                    <hr class="custom-hr">
-                    <span>Компанија на праксата:</span>
-                    <span class="card-text" th:text="${student?.internship?.company?.name}"></span>
-                    <hr class="custom-hr">
-
-                    <div th:if="${#authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities, 'COORDINATOR') or #strings.contains(#authentication.principal.authorities, 'ADMIN'))}">
-                        <a th:href="@{/my-journal/view/student/{studentId}(studentId=${student.id})}"
-                           class="btn btn-primary mb-2">Дневник</a>
-                    </div>
-
-                    <form class="custom-inline" method="POST" th:action="@{'/students/{id}/delete' (id=${student.id})}">
-                        <button type="submit" class="btn btn-primary">Одобри пракса</button>
-                    </form>
-
-                </div>
+        <form th:action="@{/my-journal/save}" method="post">
+            <div>
+                <label for="journalContentArea">Содржина:</label>
+                <textarea id="journalContentArea" name="content" rows="20"
+                          th:text="${journalContent}">
+                </textarea>
             </div>
-        </div>
-
-
+            <br/>
+            <div>
+                <button type="submit" class="btn-primary">Зачувај</button>
+            </div>
+        </form>
     </div>
 </div>
-
 </body>
 </html>

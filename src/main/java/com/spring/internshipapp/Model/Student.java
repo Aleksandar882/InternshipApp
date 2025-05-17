@@ -2,11 +2,15 @@ package com.spring.internshipapp.Model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 @Data
 @Entity
+@EqualsAndHashCode(callSuper = true, exclude = {"internship", "coordinator", "journalEntry"}) // Exclude from equals/hashcode
+@ToString(callSuper = true, exclude = {"internship", "coordinator", "journalEntry"})
 @NoArgsConstructor
 public class Student extends User {
 
@@ -22,6 +26,9 @@ public class Student extends User {
 
     @ManyToOne
     private Coordinator coordinator;
+
+    @OneToOne(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private JournalEntry journalEntry;
 
     public Student(String email,String password,Role role) {
         super(email,password,role);
