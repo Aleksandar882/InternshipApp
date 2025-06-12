@@ -9,5 +9,5 @@ public interface JournalService {
     public Optional<JournalEntry> getJournalForStudent(Student student);
     public JournalEntry saveOrUpdateJournal(String content, Student student);
     public Student findStudentByEmail(String email);
-    public Optional<JournalEntry> getJournalByStudentId(Integer studentId);
+    public Optional<JournalEntry> getJournalByStudentId(Long studentId);
 }

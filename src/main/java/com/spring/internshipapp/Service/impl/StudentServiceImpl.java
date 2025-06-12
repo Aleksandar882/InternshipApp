@@ -11,7 +11,10 @@ import com.spring.internshipapp.Repository.UserRepository;
 import com.spring.internshipapp.Service.StudentService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -85,5 +88,36 @@ public class StudentServiceImpl implements StudentService {
     public boolean delete(Long index) {
         this.studentRepository.deleteById(index);
         return this.studentRepository.findById(index).isEmpty();
+    }
+
+    @Transactional
+    @Override
+    public Student storeCv(Long studentId, MultipartFile file) throws IOException {
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("Student not found with id " + studentId));
+
+        if (fileName.contains("..")) {
+            throw new RuntimeException("Извинете! Името на датотеката содржи невалидна патека " + fileName);
+        }
+        if (file.isEmpty()) {
+            throw new RuntimeException("Неуспешно зачувување на празна датотека.");
+        }
+
+        if (!"application/pdf".equals(file.getContentType())) {
+            throw new RuntimeException("Невалиден тип на датотека. Дозволени се само PDF датотеки.");
+        }
+
+
+        student.setCvFileName(fileName);
+        student.setCvData(file.getBytes());
+
+        return studentRepository.save(student);
+    }
+
+    @Override
+    @Transactional
+    public Optional<Student> getStudentWithCv(Long studentId) {
+        return studentRepository.findById(studentId);
     }
 }

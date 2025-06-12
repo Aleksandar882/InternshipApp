@@ -5,11 +5,13 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 @Data
 @Entity
-@EqualsAndHashCode(callSuper = true, exclude = {"internship", "coordinator", "journalEntry"}) // Exclude from equals/hashcode
+@EqualsAndHashCode(callSuper = true, exclude = {"internship", "coordinator", "journalEntry"})
 @ToString(callSuper = true, exclude = {"internship", "coordinator", "journalEntry"})
 @NoArgsConstructor
 public class Student extends User {
@@ -19,6 +21,13 @@ public class Student extends User {
     private String name;
 
     private String surname;
+
+    private String cvFileName;
+
+    @Lob
+    @Column(columnDefinition = "BYTEA")
+    @JdbcTypeCode(SqlTypes.VARBINARY)
+    private byte[] cvData;
 
 
     @ManyToOne

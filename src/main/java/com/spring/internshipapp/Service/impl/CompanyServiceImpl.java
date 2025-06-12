@@ -5,6 +5,7 @@ import com.spring.internshipapp.Model.Exceptions.CompanyNotFound;
 import com.spring.internshipapp.Model.Role;
 import com.spring.internshipapp.Repository.CompanyRepository;
 import com.spring.internshipapp.Service.CompanyService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,11 +38,13 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
+    @Transactional
     public Company getCompanyByName(String companyEmail) {
         return this.companyRepository.findByEmail(companyEmail);
     }
 
     @Override
+    @Transactional
     public Optional<Company> updateCompany(Long id, String name,Integer number, String description, String imageUrl, String address) {
         Company company=this.companyRepository.findById(id).orElseThrow(CompanyNotFound::new);
         company.setName(name);
@@ -53,6 +56,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
+    @Transactional
     public boolean delete(Long id) {
         this.companyRepository.deleteById(id);
         return this.companyRepository.findById(id).isEmpty();

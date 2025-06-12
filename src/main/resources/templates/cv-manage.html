@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <title th:text="${pageTitle ?: 'Управување со CV'}">Управување со CV</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        .custom-inline{ display: inline!important; }
+        .custom-hr{ width: 100%; border-color: grey; }
+        .custom-username{ list-style: none; }
+        .accountnamestyle{ list-style-type: none; text-decoration: none; color: #f3f3f3; padding: 0 10px; margin-right: 5px; }
+        .usericonstyle{ margin-left: 10px; color: #f3f3f3; }
+        body{padding-top: 70px; background-color: #e3f2fd;}
+        .custom-navbar{ background-color: #286090; }
+        .navbar .navbar-brand, .navbar .navbar-text { color: #f3f3f3; }
+        .navbar-nav .nav-item .nav-link { color: #f3f3f3; }
+        .navbar-nav .nav-item.active .nav-link, .navbar-nav .nav-item:hover .nav-link { color: #286090; background-color: #f3f3f3; }
+        .btn-primary{ color: #286090; background-color: #f3f3f3; border-color: #286090; }
+        .btn-primary:hover{ color: #f3f3f3; background-color: #286090; border-color: #286090; }
+
+        /* Styles for this page */
+        .cv-container { max-width: 700px; margin: 20px auto; padding: 20px; border: 1px solid #ddd; border-radius: 5px; background-color: #fff; }
+        .message { padding: 10px; margin-bottom: 15px; border-radius: 3px; }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .current-cv-info { margin-top: 15px; padding: 10px; background-color: #f9f9f9; border: 1px solid #eee; border-radius: 4px;}
+    </style>
+</head>
+<body>
+
+<!-- Your Navbar -->
+<nav class="navbar navbar-expand-lg custom-navbar fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/internships">Финки пракси</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="/internships">Пракси</a></li>
+                <li class="nav-item"><a class="nav-link" href="/companies">Компании</a></li>
+                <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_COORDINATOR')"><a href="/students" class="nav-link">Студенти</a></li>
+                <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_COMPANY')"><a href="/students-company" class="nav-link">Пријавени Студенти</a></li>
+                <li class="nav-item" sec:authorize="hasAuthority('ROLE_ADMIN')"><a href="/internships/add" class="nav-link">Додади нова пракса</a></li>
+                <li class="nav-item" sec:authorize="hasAuthority('ROLE_COMPANY')"><a href="/internships-company/add" class="nav-link">Додади нова пракса</a></li>
+                <li class="nav-item" sec:authorize="hasAuthority('ROLE_COMPANY')"><a href="/internships-company" class="nav-link">Мои Пракси</a></li>
+                <li class="nav-item" sec:authorize="hasAuthority('ROLE_ADMIN')"><a href="/register-coordinator" class="nav-link">Регистрација на координатор</a></li>
+                <li class="nav-item" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_STUDENT'))}">
+                    <a class="nav-link" href="/my-journal">Дневник</a>
+                </li>
+                <li class="nav-item active" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_STUDENT'))}">
+                    <a class="nav-link" href="/student/cv/manage">Мое CV</a>
+                </li>
+                <li class="nav-item"><a class="nav-link " sec:authorize="!isAuthenticated()" href="/login">Најава</a></li>
+                <li class="nav-item"><a class="nav-link " sec:authorize="isAuthenticated()" href="/logout">Одјава</a></li>
+                <li class="nav-item"><a class="nav-link " sec:authorize="!isAuthenticated()" href="/register">Регистрација на студент</a></li>
+                <li class="nav-item"><a class="nav-link" sec:authorize="!isAuthenticated()" href="/register-company">Регистрација на компанија</a></li>
+            </ul>
+        </div>
+        <li class="custom-username" sec:authorize="isAuthenticated()">
+            <i class="fa fa-user-o usericonstyle" aria-hidden="true">
+                <span class="accountnamestyle" sec:authentication="name"></span>
+            </i>
+        </li>
+    </div>
+</nav>
+<!-- End Navbar -->
+
+<div class="container">
+    <div class="cv-container">
+        <h1 th:text="${pageTitle ?: 'Управување со CV'}">Управување со CV</h1>
+
+        <div th:if="${successMessage}" class="message success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="message error" th:text="${errorMessage}"></div>
+
+        <div th:if="${student != null && student.cvFileName != null}" class="current-cv-info">
+            <h4>Моментално CV (PDF):</h4>
+            <p>
+                <strong>Име на датотека:</strong> <span th:text="${student.cvFileName}">my_cv.pdf</span><br/>
+            </p>
+            <a th:href="@{/student/cv/download}" class="btn btn-success btn-sm">Превземи CV</a>
+            <hr>
+            <p>За да го замените, прикачете нова PDF датотека подолу.</p>
+        </div>
+        <div th:if="${student != null && student.cvFileName == null}" class="alert alert-info">
+            Сеуште немате прикачено CV.
+        </div>
+
+        <form th:action="@{/student/cv/upload}" method="post" enctype="multipart/form-data" class="mt-3">
+            <div class="form-group">
+                <label for="cvFile" class="btn btn-primary">
+                    Избери PDF Датотека
+                </label>
+                <input type="file" class="form-control-file" id="cvFile" name="cvFile" accept="application/pdf,.pdf" required
+                       style="display: none;" onchange="updateFileName(this)">
+                <span id="fileNameDisplay" class="ml-2">Не е избрана датотека</span>
+            </div>
+            <button type="submit" class="btn btn-primary">Прикачи CV</button>
+        </form>
+    </div>
+</div>
+
+
+<script>
+    function updateFileName(input) {
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        if (input.files && input.files.length > 0) {
+            fileNameDisplay.textContent = input.files[0].name;
+        } else {
+            fileNameDisplay.textContent = 'Не е избрана датотека';
+        }
+    }
+</script>
+</body>
+</html>

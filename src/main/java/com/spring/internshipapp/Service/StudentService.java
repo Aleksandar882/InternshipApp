@@ -1,7 +1,9 @@
 package com.spring.internshipapp.Service;
 
 import com.spring.internshipapp.Model.Student;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,5 +26,8 @@ public interface StudentService {
 
     boolean delete(Long index);
 
+    public Student storeCv(Long studentId, MultipartFile file) throws IOException;
+
+    public Optional<Student> getStudentWithCv(Long studentId);
 
 }

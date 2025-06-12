@@ -82,7 +82,7 @@ public class JournalController {
             return "redirect:/login";
         }
 
-        Optional<JournalEntry> journalOpt = journalService.getJournalByStudentId(Math.toIntExact(studentId));
+        Optional<JournalEntry> journalOpt = journalService.getJournalByStudentId(studentId);
 
         if (journalOpt.isPresent()) {
             model.addAttribute("journalContent", journalOpt.get().getContent());

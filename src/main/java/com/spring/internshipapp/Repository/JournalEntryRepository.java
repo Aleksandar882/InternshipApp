@@ -10,5 +10,5 @@ import java.util.Optional;
 @Repository
 public interface JournalEntryRepository extends JpaRepository<JournalEntry, Long> {
     Optional<JournalEntry> findByStudent(Student student);
-    Optional<JournalEntry> findByStudentId(Integer studentId);
+    Optional<JournalEntry> findByStudentId(Long studentId);
 }

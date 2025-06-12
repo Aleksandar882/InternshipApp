@@ -56,7 +56,7 @@ public class JournalServiceImpl implements JournalService {
 
     @Transactional
     @Override
-    public Optional<JournalEntry> getJournalByStudentId(Integer studentId) {
+    public Optional<JournalEntry> getJournalByStudentId(Long studentId) {
         return journalEntryRepository.findByStudentId(studentId);
     }
 }

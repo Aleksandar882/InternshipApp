@@ -124,8 +124,7 @@ public class InternshipController {
         String username = req.getRemoteUser();
         {
             Company company=this.companyService.getCompanyByName(username);
-            Integer companyIdInteger=company.getId();
-            Long companyId= (long) companyIdInteger;
+            Long companyId= company.getId();
             this.internshipService.updateInternship(id,position, location, description, timePeriod, companyId);
             return "redirect:/internships-company";
         }
@@ -150,8 +149,7 @@ public class InternshipController {
         String username = req.getRemoteUser();
         {
             Company company=this.companyService.getCompanyByName(username);
-            Integer companyIdInteger=company.getId();
-            Long companyId= (long) companyIdInteger;
+            Long companyId= company.getId();
             this.internshipService.addNewInternship(position, location, description, timePeriod, companyId);
             return "redirect:/internships-company";
         }
