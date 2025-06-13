@@ -1,5 +1,6 @@
 package com.spring.internshipapp.Service.impl;
 
+import com.spring.internshipapp.Model.ApplicationStatus;
 import com.spring.internshipapp.Model.Exceptions.InternshipNotFound;
 import com.spring.internshipapp.Model.Exceptions.StudentNotFound;
 import com.spring.internshipapp.Model.Exceptions.UserNotFoundException;
@@ -64,6 +65,7 @@ public class StudentServiceImpl implements StudentService {
                 .orElseThrow(UserNotFoundException::new);
         Internship internship = this.internshipRepository.findById(internshipId).orElseThrow(InternshipNotFound::new);
         student.setInternship(internship);
+        student.setApplicationStatus(ApplicationStatus.PENDING);
         return this.studentRepository.save(student);
     }
 
@@ -119,5 +121,47 @@ public class StudentServiceImpl implements StudentService {
     @Transactional
     public Optional<Student> getStudentWithCv(Long studentId) {
         return studentRepository.findById(studentId);
+    }
+
+    @Override
+    @Transactional
+    public void acceptStudentApplication(Long studentId, Long companyId) {
+        Student student = studentRepository.findByIdAndInternship_Company_IdAndApplicationStatus(
+                        studentId, companyId, ApplicationStatus.PENDING)
+                .orElseThrow(() -> new RuntimeException("Pending student application not found for this company."));
+        student.setApplicationStatus(ApplicationStatus.ACCEPTED);
+        studentRepository.save(student);
+    }
+
+    @Override
+    @Transactional
+    public void declineStudentApplication(Long studentId, Long companyId) {
+        Student student = studentRepository.findByIdAndInternship_Company_IdAndApplicationStatus(
+                        studentId, companyId, ApplicationStatus.PENDING)
+                .orElseThrow(() -> new RuntimeException("Pending student application not found for this company."));
+
+        student.setApplicationStatus(ApplicationStatus.DECLINED);
+        student.setInternship(null);
+        studentRepository.save(student);
+    }
+
+    @Override
+    @Transactional
+    public boolean isStudentAcceptedByThisCompany(Long studentId, Long companyId) {
+        Optional<Student> studentOpt = studentRepository.findByIdAndInternship_Company_IdAndApplicationStatus(
+                studentId, companyId, ApplicationStatus.ACCEPTED);
+        return studentOpt.isPresent();
+    }
+
+    @Override
+    @Transactional
+    public List<Student> findPendingApplicantsForCompany(Long companyId) {
+        return studentRepository.findByInternship_Company_IdAndApplicationStatus(companyId, ApplicationStatus.PENDING);
+    }
+
+    @Override
+    @Transactional
+    public List<Student> findAcceptedStudentsForCompany(Long companyId) {
+        return studentRepository.findByInternship_Company_IdAndApplicationStatus(companyId, ApplicationStatus.ACCEPTED);
     }
 }

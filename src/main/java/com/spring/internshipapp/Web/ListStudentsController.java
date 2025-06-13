@@ -1,23 +1,36 @@
 package com.spring.internshipapp.Web;
 
-import com.spring.internshipapp.Model.Company;
-import com.spring.internshipapp.Model.Internship;
-import com.spring.internshipapp.Model.Student;
+import com.spring.internshipapp.Model.*;
 import com.spring.internshipapp.Service.CompanyService;
 import com.spring.internshipapp.Service.InternshipService;
+import com.spring.internshipapp.Service.JournalService;
 import com.spring.internshipapp.Service.StudentService;
+import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class ListStudentsController {
+
+    @Autowired
+    private JournalService journalService;
+
 
     private final StudentService studentService;
     private final InternshipService internshipService;
@@ -27,6 +40,13 @@ public class ListStudentsController {
         this.studentService = studentService;
         this.internshipService = internshipService;
         this.companyService = companyService;
+    }
+
+    private Company getAuthenticatedCompany(User currentUserPrincipal) {
+        if (currentUserPrincipal instanceof Company) {
+            return (Company) currentUserPrincipal;
+        }
+        throw new IllegalStateException("Authenticated user is not a Company or company record not found.");
     }
 
     @GetMapping({"/students"})
@@ -48,18 +68,20 @@ public class ListStudentsController {
     }
 
     @GetMapping({"/students-company"})
-    public String getStudentsByCompany(@RequestParam(required = false) String error,
-                                      HttpServletRequest req,
-                                      Model model) {
-        if (error != null && !error.isEmpty()) {
-            model.addAttribute("hasError", true);
-            model.addAttribute("error", error);
-        }
-        String username = req.getRemoteUser();
-        List<Student> students = this.studentService.getAllByCompany(username);
-        model.addAttribute("students", students);
+    @PreAuthorize("hasAuthority('ROLE_COMPANY')")
+    public String listCompanyApplicants(Model model, @AuthenticationPrincipal User currentUserPrincipal) {
+        try {
+            Company company = getAuthenticatedCompany(currentUserPrincipal);
+            List<Student> pendingApplicants = studentService.findPendingApplicantsForCompany(company.getId());
+            List<Student> acceptedApplicants = studentService.findAcceptedStudentsForCompany(company.getId());
 
-        return "students-company.html";
+            model.addAttribute("pendingApplicants", pendingApplicants);
+            model.addAttribute("acceptedApplicants", acceptedApplicants);
+            model.addAttribute("pageTitle", "Пријавени Студенти");
+            return "students-company";
+        } catch (IllegalStateException e) {
+            return "redirect:/error-unauthorized";
+        }
     }
 
     @PostMapping("/students/{id}/delete")
@@ -68,4 +90,86 @@ public class ListStudentsController {
         return "redirect:/students";
     }
 
+    @GetMapping("/students/{id}/cv/download")
+    @PreAuthorize("hasAuthority('ROLE_COMPANY')")
+    public ResponseEntity<ByteArrayResource> downloadApplicantCv(@PathVariable("id") Long studentId,
+                                                        @AuthenticationPrincipal User currentUserPrincipal) {
+        if (currentUserPrincipal == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        try {
+            Optional<Student> studentOpt = studentService.getStudentWithCv(studentId);
+
+            if (!studentOpt.isPresent() || studentOpt.get().getCvData() == null || studentOpt.get().getCvFileName() == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            Student student = studentOpt.get();
+            ByteArrayResource resource = new ByteArrayResource(student.getCvData());
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + student.getCvFileName() + "\"")
+                    .body(resource);
+
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(403).build();
+        }
+    }
+
+    @PostMapping("/students/{id}/accept")
+    @PreAuthorize("hasAuthority('ROLE_COMPANY')")
+    public String acceptApplicant(@PathVariable("id") Long studentId,
+                                  @AuthenticationPrincipal User currentUserPrincipal,
+                                  RedirectAttributes redirectAttributes) {
+        try {
+            Company company = getAuthenticatedCompany(currentUserPrincipal);
+            studentService.acceptStudentApplication(studentId, company.getId());
+            redirectAttributes.addFlashAttribute("successMessage", "Студентот е прифатен.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Грешка: " + e.getMessage());
+        }
+        return "redirect:/students-company";
+    }
+
+    @PostMapping("/students/{id}/decline")
+    @PreAuthorize("hasAuthority('ROLE_COMPANY')")
+    public String declineApplicant(@PathVariable("id") Long studentId,
+                                   @AuthenticationPrincipal User currentUserPrincipal,
+                                   RedirectAttributes redirectAttributes) {
+        try {
+            Company company = getAuthenticatedCompany(currentUserPrincipal);
+            studentService.declineStudentApplication(studentId, company.getId());
+            redirectAttributes.addFlashAttribute("successMessage", "Студентот е одбиен.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Грешка: " + e.getMessage());
+        }
+        return "redirect:/students-company";
+    }
+
+    @GetMapping("/students/{id}/journal")
+    @PreAuthorize("hasAuthority('ROLE_COMPANY')")
+    public String viewAcceptedStudentJournal(@PathVariable("id") Long studentId,
+                                             @AuthenticationPrincipal User currentUserPrincipal,
+                                             Model model, RedirectAttributes redirectAttributes) {
+
+            Company company = getAuthenticatedCompany(currentUserPrincipal);
+            boolean isAcceptedByThisCompany = studentService.isStudentAcceptedByThisCompany(studentId, company.getId());
+            if (!isAcceptedByThisCompany) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Немате пристап до овој дневник или студентот не е прифатен од вашата компанија.");
+                return "redirect:/students-company";
+            }
+            Optional<JournalEntry> journalOpt = journalService.getJournalByStudentId(studentId);
+            if (journalOpt.isPresent()) {
+                model.addAttribute("journalContent", journalOpt.get().getContent());
+                Optional<Student> student = studentService.findById(studentId);
+                model.addAttribute("viewingStudent", student);
+                model.addAttribute("pageTitle", "Дневник за пракса");
+            return "view-student-journal.html";
+        } else {
+                redirectAttributes.addFlashAttribute("errorMessage", "Студентот нема дневник.");
+                return "redirect:/students-company";
+            }
+    }
 }

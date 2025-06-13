@@ -30,4 +30,14 @@ public interface StudentService {
 
     public Optional<Student> getStudentWithCv(Long studentId);
 
+    public void acceptStudentApplication(Long studentId, Long companyId);
+
+    public void declineStudentApplication(Long studentId, Long companyId);
+
+    public boolean isStudentAcceptedByThisCompany(Long studentId, Long companyId);
+
+    public List<Student> findPendingApplicantsForCompany(Long companyId);
+
+    public List<Student> findAcceptedStudentsForCompany(Long companyId);
+
 }

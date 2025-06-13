@@ -1,23 +1,24 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
-    <title>Финки Пракси</title>
+    <title th:text="${pageTitle ?: 'Пријавени Студенти'}">Пријавени Студенти</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="UTF-8">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-
-
     <style>
-
-        .custom-inline{
-            display: inline!important;
-        }
-
-        .custom-hr{
-            width: 100%;
-            border-color: grey;
-        }
+        body{padding-top: 70px; background-color: #e3f2fd;}
+        .custom-navbar{ background-color: #286090; }
+        .navbar .navbar-brand, .navbar .navbar-text { color: #f3f3f3; }
+        .navbar-nav .nav-item .nav-link { color: #f3f3f3; }
+        .navbar-nav .nav-item.active .nav-link, .navbar-nav .nav-item:hover .nav-link { color: #286090; background-color: #f3f3f3; }
+        .btn-primary{ color: #286090; background-color: #f3f3f3; border-color: #286090; }
+        .btn-primary:hover{ color: #f3f3f3; background-color: #286090; border-color: #286090; }
+        .custom-hr{ width: 100%; border-color: grey; }
+        .action-buttons form, .action-buttons a { margin-bottom: 5px; display: inline-block; margin-right: 5px; } /* Inline buttons */
+        .card-body .btn { margin-top: 5px; }
+        .message { padding: 10px; margin-bottom: 15px; border-radius: 3px; }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
         .custom-username{
             list-style: none;
         }
@@ -32,50 +33,9 @@
             margin-left: 10px;
             color: #f3f3f3;
         }
-        .card-img-top {
-            width: 100%;
-            height: 15vw;
-            object-fit: cover;
-        }
-        body{padding-top: 70px;
-            background-color: #e3f2fd;}
-
-        .custom-navbar{
-            background-color: #286090;
-        }
-        /* change the brand and text color */
-        .navbar .navbar-brand,
-        .navbar .navbar-text {
-            color: #f3f3f3;
-        }
-        /* change the link color */
-        .navbar-nav .nav-item .nav-link {
-            color: #f3f3f3;
-        }
-        /* change the color of active or hovered links */
-        .navbar-nav .nav-item.active .nav-link,
-        .navbar-nav .nav-item:hover .nav-link {
-            color: #286090;
-            background-color: #f3f3f3;
-        }
-        .btn-primary{
-            color: #286090;
-            background-color: #f3f3f3;
-            border-color: #286090;
-        }
-        .btn-primary:hover{
-            color: #f3f3f3;
-            background-color: #286090;
-            border-color: #286090;
-        }
-
-
-
     </style>
-
 </head>
 <body>
-
 <nav class="navbar navbar-expand-lg custom-navbar fixed-top">
     <div class="container-fluid">
         <a class="navbar-brand" href="/internships">Финки пракси</a>
@@ -97,52 +57,40 @@
                     <a href="/students-company" class="nav-link" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN') or #strings.contains(#authentication.principal.authorities,'ROLE_COMPANY'))}">Пријавени Студенти</a>
                 </li>
                 <li class="nav-item">
-                    <a href="/internships/add" class="nav-link active" aria-current="page" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN'))}">Додади нова пракса</a>
-                </li>
-                <li class="nav-item">
                     <a href="/internships-company/add" class="nav-link active" aria-current="page" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_COMPANY'))}">Додади нова пракса</a>
                 </li>
                 <li class="nav-item">
                     <a href="/internships-company" class="nav-link active" aria-current="page" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_COMPANY'))}">Мои Пракси</a>
                 </li>
                 <li class="nav-item">
-                    <a href="/register-coordinator" class="nav-link" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN'))}">Регистрација на координатор</a>
+                    <a class="nav-link" sec:authorize="!isAuthenticated()" href="/login">Најава</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link " sec:authorize="!isAuthenticated()" href="/login">Најава</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link " sec:authorize="isAuthenticated()" href="/logout">Одјава</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link " sec:authorize="!isAuthenticated()" href="/register">Регистрација на студент</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" sec:authorize="!isAuthenticated()" href="/register-company">Регистрација на компанија</a>
+                    <a class="nav-link" sec:authorize="isAuthenticated()" href="/logout">Одјава</a>
                 </li>
             </ul>
         </div>
-        <li class="custom-username">
-            <i class="fa fa-user-o usericonstyle" sec:authorize="isAuthenticated()" aria-hidden="true">
+        <li class="custom-username" sec:authorize="isAuthenticated()">
+            <i class="fa fa-user-o usericonstyle" aria-hidden="true">
                 <span class="accountnamestyle"    sec:authentication="name"></span>
             </i>
         </li>
     </div>
-
 </nav>
 
 <div class="container">
-    <div class="row">
+    <h1 class="mt-4 mb-3" th:text="${pageTitle ?: 'Пријавени Студенти'}">Пријавени Студенти</h1>
 
+    <div th:if="${successMessage}" class="message success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="message error" th:text="${errorMessage}"></div>
 
-        <div id="scrollto" class="col-lg-4 mt-5" th:each="student: ${students}">
-            <div class="card text-center">
-                <div class="card-body">
-                    <span>Име:</span>
-                    <h5 class="card-title" th:text="${student.name}"></h5>
-                    <hr class="custom-hr">
-                    <span>Презиме:</span>
-                    <span class="card-text" th:text="${student.surname}"></span>
+    <h3 th:if="${not #lists.isEmpty(pendingApplicants)}">Апликации на чекање</h3>
+    <div class="row" th:if="${not #lists.isEmpty(pendingApplicants)}">
+        <div class="col-lg-4 mt-3" th:each="student : ${pendingApplicants}">
+            <div class="card text-center h-100">
+                <div class="card-body d-flex flex-column">
+                    <span>Студент:</span>
+                    <h5 class="card-title" th:text="${student.name + ' ' + student.surname}"></h5>
                     <hr class="custom-hr">
                     <span>Индекс:</span>
                     <p class="card-text" th:text="${student.index}"></p>
@@ -150,13 +98,61 @@
                     <span>Пракса:</span>
                     <p class="card-text" th:text="${student.internship?.position}"></p>
                     <hr class="custom-hr">
+
+                    <div th:if="${student.cvFileName != null}" class="mb-2">
+                        <a th:href="@{/students/{id}/cv/download(id=${student.id})}"
+                           class="btn btn-sm btn-primary" title="Превземи CV">
+                            <i class="fa fa-download"></i> <span th:text="${student.cvFileName}"></span>
+                        </a>
+                    </div>
+                    <span th:if="${student.cvFileName == null}" class="text-muted d-block mb-2">Нема CV</span>
+                    <hr class="custom-hr">
+
+                    <div class="action-buttons mt-auto">
+                        <form method="POST" th:action="@{/students/{id}/accept(id=${student.id})}">
+                            <button type="submit" class="btn btn-success">Прифати</button>
+                        </form>
+                        <form method="POST" th:action="@{/students/{id}/decline(id=${student.id})}">
+                            <button type="submit" class="btn btn-danger">Одбиј</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
+    <p th:if="${#lists.isEmpty(pendingApplicants) and #lists.isEmpty(acceptedApplicants)}" class="alert alert-info">Нема активни пријави на студенти за вашите пракси.</p>
 
-
+    <h3 th:if="${not #lists.isEmpty(acceptedApplicants)}" class="mt-5">Прифатени Студенти</h3>
+    <div class="row" th:if="${not #lists.isEmpty(acceptedApplicants)}">
+        <div class="col-lg-4 mt-3" th:each="student : ${acceptedApplicants}">
+            <div class="card text-center h-100">
+                <div class="card-body d-flex flex-column">
+                    <span>Студент:</span>
+                    <h5 class="card-title" th:text="${student.name + ' ' + student.surname}"></h5>
+                    <hr class="custom-hr">
+                    <span>Индекс:</span>
+                    <p class="card-text" th:text="${student.index}"></p>
+                    <hr class="custom-hr">
+                    <span>Пракса:</span>
+                    <p class="card-text" th:text="${student.internship?.position}"></p>
+                    <hr class="custom-hr">
+                    <div th:if="${student.cvFileName != null}" class="mb-2">
+                        <a th:href="@{/students/{id}/cv/download(id=${student.id})}"
+                           class="btn btn-sm btn-primary" title="Превземи CV">
+                            <i class="fa fa-download"></i> <span th:text="${student.cvFileName}"></span>
+                        </a>
+                    </div>
+                    <span th:if="${student.cvFileName == null}" class="text-muted d-block mb-2">Нема CV</span>
+                    <hr class="custom-hr">
+                    <div class="action-buttons mt-auto">
+                        <p class="text-success font-weight-bold">Прифатен</p>
+                        <a th:href="@{/students/{id}/journal(id=${student.id})}"
+                           class="btn btn-primary">Види Дневник</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-
 </body>
 </html>

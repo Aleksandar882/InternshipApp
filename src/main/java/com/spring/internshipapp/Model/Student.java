@@ -8,6 +8,7 @@ import lombok.ToString;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.security.access.method.P;
 
 @Data
 @Entity
@@ -23,6 +24,9 @@ public class Student extends User {
     private String surname;
 
     private String cvFileName;
+
+    @Enumerated(EnumType.STRING)
+    private ApplicationStatus applicationStatus;
 
     @Lob
     @Column(columnDefinition = "BYTEA")

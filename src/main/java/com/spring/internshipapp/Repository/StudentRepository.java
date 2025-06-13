@@ -1,5 +1,6 @@
 package com.spring.internshipapp.Repository;
 
+import com.spring.internshipapp.Model.ApplicationStatus;
 import com.spring.internshipapp.Model.Student;
 import com.spring.internshipapp.Model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,4 +22,8 @@ public interface StudentRepository extends JpaRepository<Student,Long> {
     List<Student>findAllByInternshipCompanyEmail(String companyEmail);
 
     List<Student>findAllByCoordinatorEmail(String coordinatorEmail);
+
+    Optional<Student> findByIdAndInternship_Company_IdAndApplicationStatus(Long studentId, Long companyId, ApplicationStatus status);
+
+    List<Student> findByInternship_Company_IdAndApplicationStatus(Long companyId, ApplicationStatus status);
 }
