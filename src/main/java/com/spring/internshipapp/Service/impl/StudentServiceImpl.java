@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -155,6 +156,14 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     @Transactional
+    public boolean isStudentFinishedForCompany(Long studentId, Long companyId) {
+        Optional<Student> studentOpt = studentRepository.findByIdAndInternship_Company_IdAndApplicationStatus(
+                studentId, companyId, ApplicationStatus.FINISHED);
+        return studentOpt.isPresent();
+    }
+
+    @Override
+    @Transactional
     public List<Student> findPendingApplicantsForCompany(Long companyId) {
         return studentRepository.findByInternship_Company_IdAndApplicationStatus(companyId, ApplicationStatus.PENDING);
     }
@@ -163,5 +172,37 @@ public class StudentServiceImpl implements StudentService {
     @Transactional
     public List<Student> findAcceptedStudentsForCompany(Long companyId) {
         return studentRepository.findByInternship_Company_IdAndApplicationStatus(companyId, ApplicationStatus.ACCEPTED);
+    }
+
+    @Override
+    @Transactional
+    public List<Student> findFinishedStudentsForCompany(Long companyId) {
+        return studentRepository.findByInternship_Company_IdAndApplicationStatus(companyId, ApplicationStatus.FINISHED);
+    }
+
+    @Override
+    @Transactional
+    public void finishStudentInternship(Long studentId, Long companyId) {
+        Student student = studentRepository.findByIdAndInternship_Company_IdAndApplicationStatus(
+                        studentId, companyId, ApplicationStatus.ACCEPTED)
+                .orElseThrow(() -> new RuntimeException("Accepted student application not found for this company."));
+
+        student.setApplicationStatus(ApplicationStatus.FINISHED);
+        studentRepository.save(student);
+    }
+
+    @Override
+    @Transactional
+    public List<Student> findFinishedInternshipsForCoordinator(String coordinatorEmail) {
+        List<Student> studentsOfCoordinator = studentRepository.findAllByCoordinatorEmail(coordinatorEmail);
+        return studentsOfCoordinator.stream()
+                .filter(student -> student.getApplicationStatus() == ApplicationStatus.FINISHED)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public List<Student> getAllByCoordinatorAndApplicationStatus(String coordinatorEmail, ApplicationStatus applicationStatus) {
+        return this.studentRepository.findAllByCoordinatorEmailAndApplicationStatus(coordinatorEmail,applicationStatus);
     }
 }

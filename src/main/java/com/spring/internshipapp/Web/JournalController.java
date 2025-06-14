@@ -91,7 +91,7 @@ public class JournalController {
             model.addAttribute("pageTitle", "Дневник за пракса");
             return "view-student-journal.html";
         } else {
-            redirectAttributes.addFlashAttribute("errorMessage", "Student or journal not found.");
+            redirectAttributes.addFlashAttribute("errorMessage", "Студентот нема дневник");
             return "redirect:/students";
         }
     }

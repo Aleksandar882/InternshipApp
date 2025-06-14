@@ -58,7 +58,7 @@ public class ListStudentsController {
             model.addAttribute("error", error);
         }
         String username = req.getRemoteUser();
-        List<Student> students = this.studentService.getAllByCoordinator(username);
+        List<Student> students = this.studentService.getAllByCoordinatorAndApplicationStatus(username, ApplicationStatus.FINISHED);
         List<Company> companies=this.companyService.getAllCompanies();
         List<Internship> internships=this.internshipService.getAllInternships();
         model.addAttribute("students", students);
@@ -74,9 +74,11 @@ public class ListStudentsController {
             Company company = getAuthenticatedCompany(currentUserPrincipal);
             List<Student> pendingApplicants = studentService.findPendingApplicantsForCompany(company.getId());
             List<Student> acceptedApplicants = studentService.findAcceptedStudentsForCompany(company.getId());
+            List<Student> finishedApplicants = studentService.findFinishedStudentsForCompany(company.getId());
 
             model.addAttribute("pendingApplicants", pendingApplicants);
             model.addAttribute("acceptedApplicants", acceptedApplicants);
+            model.addAttribute("finishedApplicants", finishedApplicants);
             model.addAttribute("pageTitle", "Пријавени Студенти");
             return "students-company";
         } catch (IllegalStateException e) {
@@ -148,6 +150,21 @@ public class ListStudentsController {
         return "redirect:/students-company";
     }
 
+    @PostMapping("/students/{id}/finish")
+    @PreAuthorize("hasAuthority('ROLE_COMPANY')")
+    public String finishInternship(@PathVariable("id") Long studentId,
+                                   @AuthenticationPrincipal User currentUserPrincipal,
+                                   RedirectAttributes redirectAttributes) {
+        try {
+            Company company = getAuthenticatedCompany(currentUserPrincipal);
+            studentService.finishStudentInternship(studentId, company.getId());
+            redirectAttributes.addFlashAttribute("successMessage", "Праксата е означена како завршена.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Грешка: " + e.getMessage());
+        }
+        return "redirect:/students-company";
+    }
+
     @GetMapping("/students/{id}/journal")
     @PreAuthorize("hasAuthority('ROLE_COMPANY')")
     public String viewAcceptedStudentJournal(@PathVariable("id") Long studentId,
@@ -156,7 +173,8 @@ public class ListStudentsController {
 
             Company company = getAuthenticatedCompany(currentUserPrincipal);
             boolean isAcceptedByThisCompany = studentService.isStudentAcceptedByThisCompany(studentId, company.getId());
-            if (!isAcceptedByThisCompany) {
+            boolean isFinished = studentService.isStudentFinishedForCompany(studentId, company.getId());
+            if (!isAcceptedByThisCompany && !isFinished) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Немате пристап до овој дневник или студентот не е прифатен од вашата компанија.");
                 return "redirect:/students-company";
             }

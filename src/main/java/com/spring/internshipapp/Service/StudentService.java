@@ -1,5 +1,6 @@
 package com.spring.internshipapp.Service;
 
+import com.spring.internshipapp.Model.ApplicationStatus;
 import com.spring.internshipapp.Model.Student;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,8 +37,18 @@ public interface StudentService {
 
     public boolean isStudentAcceptedByThisCompany(Long studentId, Long companyId);
 
+    public boolean isStudentFinishedForCompany(Long studentId, Long companyId);
+
     public List<Student> findPendingApplicantsForCompany(Long companyId);
 
     public List<Student> findAcceptedStudentsForCompany(Long companyId);
+
+    public List<Student> findFinishedStudentsForCompany(Long companyId);
+
+    public void finishStudentInternship(Long studentId, Long companyId);
+
+    public List<Student> findFinishedInternshipsForCoordinator(String coordinatorEmail);
+
+    public List<Student> getAllByCoordinatorAndApplicationStatus(String coordinatorEmail, ApplicationStatus applicationStatus);
 
 }

@@ -19,8 +19,9 @@
         .navbar-nav .nav-item.active .nav-link, .navbar-nav .nav-item:hover .nav-link { color: #286090; background-color: #f3f3f3; }
         .btn-primary{ color: #286090; background-color: #f3f3f3; border-color: #286090; }
         .btn-primary:hover{ color: #f3f3f3; background-color: #286090; border-color: #286090; }
+        .btn-accept{color: #f3f3f3; background-color: #6FCF97; border-color: #5ABF85;}
+        .btn-accept:hover{color: #f3f3f3; background-color: #57B983; border-color: #5ABF85;}
 
-        /* Styles for this page */
         .cv-container { max-width: 700px; margin: 20px auto; padding: 20px; border: 1px solid #ddd; border-radius: 5px; background-color: #fff; }
         .message { padding: 10px; margin-bottom: 15px; border-radius: 3px; }
         .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
@@ -30,7 +31,6 @@
 </head>
 <body>
 
-<!-- Your Navbar -->
 <nav class="navbar navbar-expand-lg custom-navbar fixed-top">
     <div class="container-fluid">
         <a class="navbar-brand" href="/internships">Финки пракси</a>
@@ -66,7 +66,6 @@
         </li>
     </div>
 </nav>
-<!-- End Navbar -->
 
 <div class="container">
     <div class="cv-container">
@@ -80,7 +79,7 @@
             <p>
                 <strong>Име на датотека:</strong> <span th:text="${student.cvFileName}">my_cv.pdf</span><br/>
             </p>
-            <a th:href="@{/student/cv/download}" class="btn btn-success btn-sm">Превземи CV</a>
+            <a th:href="@{/student/cv/download}" class="btn btn-accept btn-sm">Превземи CV</a>
             <hr>
             <p>За да го замените, прикачете нова PDF датотека подолу.</p>
         </div>
