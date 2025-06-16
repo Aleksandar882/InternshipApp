@@ -154,6 +154,10 @@
                     <div th:if="${#authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities, 'COORDINATOR') or #strings.contains(#authentication.principal.authorities, 'ADMIN'))}">
                         <a th:href="@{/my-journal/view/student/{studentId}(studentId=${student.id})}"
                            class="btn btn-primary mb-2">Дневник</a>
+                        <a th:href="@{/students/{id}/confirmation-pdf(id=${student.id})}"
+                           class="btn btn-primary mb-2" title="Превземи Потврда">
+                            <i class="fa fa-file-pdf-o"></i> Превземи Потврда
+                        </a>
                     </div>
 
                     <form class="custom-inline" method="POST" th:action="@{'/students/{id}/delete' (id=${student.id})}">

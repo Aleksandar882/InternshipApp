@@ -5,6 +5,7 @@ import com.spring.internshipapp.Service.CompanyService;
 import com.spring.internshipapp.Service.InternshipService;
 import com.spring.internshipapp.Service.JournalService;
 import com.spring.internshipapp.Service.StudentService;
+import com.spring.internshipapp.Service.impl.PdfGenerationService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +32,9 @@ public class ListStudentsController {
 
     @Autowired
     private JournalService journalService;
+
+    @Autowired
+    private PdfGenerationService pdfGenerationService;
 
 
     private final StudentService studentService;
@@ -47,6 +52,13 @@ public class ListStudentsController {
             return (Company) currentUserPrincipal;
         }
         throw new IllegalStateException("Authenticated user is not a Company or company record not found.");
+    }
+
+    private Coordinator getAuthenticatedCoordinator(User currentUserPrincipal) {
+        if (currentUserPrincipal instanceof Coordinator) {
+            return (Coordinator) currentUserPrincipal;
+        }
+        throw new IllegalStateException("Authenticated user is not a Coordinator or coordinator record not found.");
     }
 
     @GetMapping({"/students"})
@@ -189,5 +201,46 @@ public class ListStudentsController {
                 redirectAttributes.addFlashAttribute("errorMessage", "Студентот нема дневник.");
                 return "redirect:/students-company";
             }
+    }
+
+    @GetMapping("/students/{id}/confirmation-pdf")
+    @PreAuthorize("hasAuthority('ROLE_COORDINATOR')")
+    public ResponseEntity<ByteArrayResource> downloadInternshipConfirmation(
+            @PathVariable("id") Long studentId,
+            @AuthenticationPrincipal User currentUserPrincipal) throws IOException {
+
+        Optional<Student> studentOpt = studentService.getStudentWithCv(studentId);
+        if (!studentOpt.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        Student student = studentOpt.get();
+
+        Coordinator loggedInCoordinator = getAuthenticatedCoordinator(currentUserPrincipal);
+
+            if (loggedInCoordinator == null) {
+                System.err.println("Could not identify logged in coordinator for PDF download.");
+                return ResponseEntity.status(403).build();
+            }
+
+        boolean isAssigned = student.getCoordinator() != null &&
+                student.getCoordinator().getId().equals(loggedInCoordinator.getId());
+        boolean isFinished = student.getApplicationStatus() == ApplicationStatus.FINISHED;
+
+        if (!isAssigned || !isFinished) {
+            System.err.println("Unauthorized attempt to download confirmation PDF.");
+            return ResponseEntity.status(403).build();
+        }
+
+        byte[] pdfBytes = pdfGenerationService.generateInternshipConfirmationPdf(student);
+        ByteArrayResource resource = new ByteArrayResource(pdfBytes);
+
+        String filename = String.format("Potvrda_Praksa_%s_%s.pdf",
+                student.getSurname().replaceAll("[^a-zA-Z0-9]", ""),
+                student.getName().replaceAll("[^a-zA-Z0-9]", ""));
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_PDF)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                .body(resource);
     }
 }
