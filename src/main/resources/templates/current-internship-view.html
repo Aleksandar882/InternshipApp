@@ -1,73 +1,49 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
-    <title>Финки Пракси</title>
+    <title th:text="${pageTitle ?: 'Тековна Пракса'}">Тековна Пракса</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="UTF-8">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-
-
     <style>
+        body{padding-top: 70px; background-color: #e3f2fd;}
+        .custom-navbar{ background-color: #286090; }
+        .navbar .navbar-brand, .navbar .navbar-text { color: #f3f3f3; }
+        .navbar-nav .nav-item .nav-link { color: #f3f3f3; }
+        .navbar-nav .nav-item.active .nav-link, .navbar-nav .nav-item:hover .nav-link { color: #286090; background-color: #f3f3f3; }
+        .custom-username{ list-style: none; }
+        .accountnamestyle{ list-style-type: none; text-decoration: none; color: #f3f3f3; padding: 0 10px; margin-right: 5px; }
+        .usericonstyle{ margin-left: 10px; color: #f3f3f3; }
 
-        .custom-inline{
-            display: inline!important;
-        }
 
-        .custom-hr{
-            width: 100%;
-            border-color: grey;
+        .internship-details-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 25px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        .custom-username{
-            list-style: none;
-        }
-        .accountnamestyle{
-            list-style-type: none;
-            text-decoration: none;
-            color: #f3f3f3;
-            padding: 0 10px;
-            margin-right: 5px;
-        }
-        .usericonstyle{
-            margin-left: 10px;
-            color: #f3f3f3;
-        }
-        .card-img-top {
-            width: 100%;
-            height: 15vw;
-            object-fit: cover;
-        }
-        body{padding-top: 70px;
-            background-color: #e3f2fd;}
-        .custom-navbar{
-            background-color: #286090;
-        }
-        .navbar .navbar-brand,
-        .navbar .navbar-text {
-            color: #f3f3f3;
-        }
-        .navbar-nav .nav-item .nav-link {
-            color: #f3f3f3;
-        }
-        .navbar-nav .nav-item.active .nav-link,
-        .navbar-nav .nav-item:hover .nav-link {
+        .internship-details-container h1 {
             color: #286090;
-            background-color: #f3f3f3;
+            margin-bottom: 20px;
         }
-        .btn-primary{
-            color: #286090;
-            background-color: #f3f3f3;
-            border-color: #286090;
+        .detail-item {
+            margin-bottom: 15px;
         }
-        .btn-primary:hover{
-            color: #f3f3f3;
-            background-color: #286090;
-            border-color: #286090;
+        .detail-item strong {
+            display: block;
+            color: #555;
+            margin-bottom: 3px;
         }
-
-
+        .detail-item p, .detail-item span {
+            margin-bottom: 0;
+            font-size: 1.1em;
+        }
+        .custom-hr{ width: 100%; border-color: #ccc; margin-top:10px; margin-bottom:10px;}
     </style>
-
 </head>
 <body>
 
@@ -79,10 +55,10 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
+                <li class="nav-item" aria-current="page">
                     <a class="nav-link" href="/internships">Пракси</a>
                 </li>
-                <li class="nav-item active" aria-current="page">
+                <li class="nav-item">
                     <a class="nav-link" href="/companies">Компании</a>
                 </li>
                 <li class="nav-item">
@@ -109,56 +85,66 @@
                 <li class="nav-item" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_STUDENT'))}">
                     <a class="nav-link" href="/student/cv/manage">Мое CV</a>
                 </li>
-                <li class="nav-item" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_STUDENT'))}">
+                <li class="nav-item active" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_STUDENT'))}">
                     <a class="nav-link" href="/student/current-internship">Тековна Пракса</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" sec:authorize="!isAuthenticated()" href="/login">Најава</a>
+                    <a class="nav-link " sec:authorize="!isAuthenticated()" href="/login">Најава</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" sec:authorize="isAuthenticated()" href="/logout">Одјава</a>
+                    <a class="nav-link " sec:authorize="isAuthenticated()" href="/logout">Одјава</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" sec:authorize="!isAuthenticated()" href="/register">Регистрација на студент</a>
+                    <a class="nav-link " sec:authorize="!isAuthenticated()" href="/register">Регистрација на студент</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" sec:authorize="!isAuthenticated()" href="/register-company">Регистрација на компанија</a>
                 </li>
             </ul>
         </div>
-        <li class="custom-username">
-            <i class="fa fa-user-o usericonstyle" sec:authorize="isAuthenticated()" aria-hidden="true">
-                <span class="accountnamestyle"    sec:authentication="name"></span>
+        <li class="custom-username" sec:authorize="isAuthenticated()">
+            <i class="fa fa-user-o usericonstyle" aria-hidden="true">
+                <span class="accountnamestyle" sec:authentication="name"></span>
             </i>
         </li>
     </div>
-
 </nav>
 
+
 <div class="container">
-    <div class="row">
+    <div class="internship-details-container">
+        <h1 th:text="${pageTitle ?: 'Тековна Пракса'}">Тековна Пракса</h1>
 
-
-        <div id="scrollto" class="col-lg-4 mt-5" th:each="company: ${companies}">
-            <div class="card text-center h-100">
-                <img class="card-img-top" th:src="@{${company.imageUrl}}" alt="Card image cap">
-                <div class="card-body">
-                    <h5 class="card-title" th:text="${company.name}"></h5>
-                    <hr class="custom-hr">
-                    <span>За нас:</span>
-                    <p class="card-text" th:text="${company.description}"></p>
-                    <hr class="custom-hr">
-                    <span>Адреса:</span>
-                    <span class="card-text" th:text="${company.address}"></span>
-                    <hr class="custom-hr">
-                    <span>Контакт телефон:</span>
-                    <p class="card-text" th:text="${company.number}"></p>
-                    <hr class="custom-hr">
-                </div>
+        <div th:if="${currentInternship != null}">
+            <div class="detail-item">
+                <strong>Позиција:</strong>
+                <p th:text="${currentInternship.position}"></p>
+            </div>
+            <hr class="custom-hr">
+            <div class="detail-item">
+                <strong>Компанија:</strong>
+                <p th:text="${currentInternship.company?.name}"></p>
+            </div>
+            <hr class="custom-hr">
+            <div class="detail-item">
+                <strong>Локација:</strong>
+                <p th:text="${currentInternship.location}"></p>
+            </div>
+            <hr class="custom-hr">
+            <div class="detail-item">
+                <strong>Период:</strong>
+                <p th:text="${currentInternship.timePeriod}"></p>
+            </div>
+            <hr class="custom-hr">
+            <div class="detail-item">
+                <strong>Опис на Праксата:</strong>
+                <p style="white-space: pre-wrap;" th:text="${currentInternship.description}"></p>
             </div>
         </div>
 
-
+        <div th:if="${currentInternship == null}">
+            <p class="alert alert-info" th:text="${infoMessage ?: 'Немате активна пракса.'}"></p>
+        </div>
     </div>
 </div>
 

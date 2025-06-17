@@ -1,11 +1,12 @@
 package com.spring.internshipapp.Web;
 
-import com.spring.internshipapp.Model.Company;
-import com.spring.internshipapp.Model.Internship;
-import com.spring.internshipapp.Model.Student;
+import com.spring.internshipapp.Model.*;
 import com.spring.internshipapp.Service.CompanyService;
 import com.spring.internshipapp.Service.InternshipService;
+import com.spring.internshipapp.Service.StudentService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,18 +15,24 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 public class InternshipController {
 
     private final InternshipService internshipService;
     private final CompanyService companyService;
+    private final StudentService studentService;
 
 
-    public InternshipController(InternshipService internshipService, CompanyService companyService) {
+    public InternshipController(InternshipService internshipService, CompanyService companyService, StudentService studentService) {
         this.internshipService = internshipService;
         this.companyService = companyService;
+        this.studentService = studentService;
+    }
+
+    private Student getAuthenticatedStudent(User currentUserPrincipal) {
+        return studentService.getStudentWithCv(currentUserPrincipal.getId())
+                .orElseThrow(() -> new IllegalStateException("Student record not found for authenticated user."));
     }
 
     @GetMapping({"/", "/internships"})
@@ -159,5 +166,29 @@ public class InternshipController {
         List<Company> companies = this.companyService.getAllCompanies();
         model.addAttribute("companies", companies);
         return "form-from-company.html";
+    }
+
+    @GetMapping("/student/current-internship")
+    @PreAuthorize("hasAuthority('ROLE_STUDENT')")
+    public String viewCurrentInternship(Model model, @AuthenticationPrincipal User currentUserPrincipal) {
+        if (currentUserPrincipal == null) {
+            return "redirect:/login";
+        }
+        try {
+            Student student = getAuthenticatedStudent(currentUserPrincipal);
+
+            if (student.getApplicationStatus() == ApplicationStatus.ACCEPTED && student.getInternship() != null) {
+                model.addAttribute("currentInternship", student.getInternship());
+                model.addAttribute("pageTitle", "Тековна Пракса");
+            } else {
+                model.addAttribute("currentInternship", null);
+                model.addAttribute("pageTitle", "Тековна Пракса");
+                model.addAttribute("infoMessage", "Моментално немате активна пракса.");
+            }
+            return "current-internship-view.html";
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", "Грешка при вчитување на податоците за студентот.");
+            return "error";
+        }
     }
 }

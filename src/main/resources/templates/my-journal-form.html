@@ -6,12 +6,15 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
-        .journal-container { max-width: 800px; margin: 20px auto; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }
-        label { display: block; margin-bottom: 8px; font-weight: bold; }
-        textarea { width: 100%; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; padding: 10px; }
+        .journal-container { max-width: 800px; margin: 20px auto; padding: 20px; border: 1px solid #ddd; border-radius: 5px; background-color: #fff; }
+        .weekly-entry { margin-bottom: 20px; }
+        .weekly-entry label { font-weight: bold; display: block; margin-bottom: 5px; }
+        .weekly-entry textarea { width: 100%; min-height: 100px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; padding: 10px; }
         .message { padding: 10px; margin-bottom: 15px; border-radius: 3px; }
         .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .btn-submit { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        .btn-submit:hover { background-color: #0056b3; }
 
         custom-inline{
             display: inline!important;
@@ -110,6 +113,9 @@
                 <li class="nav-item" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_STUDENT'))}">
                     <a class="nav-link" href="/student/cv/manage">Мое CV</a>
                 </li>
+                <li class="nav-item" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_STUDENT'))}">
+                    <a class="nav-link" href="/student/current-internship">Тековна Пракса</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link " sec:authorize="!isAuthenticated()" href="/login">Најава</a>
                 </li>
@@ -139,19 +145,62 @@
         <div th:if="${successMessage}" class="message success" th:text="${successMessage}"></div>
         <div th:if="${errorMessage}" class="message error" th:text="${errorMessage}"></div>
 
-        <form th:action="@{/my-journal/save}" method="post">
-            <div>
-                <label for="journalContentArea">Содржина:</label>
-                <textarea id="journalContentArea" name="content" rows="20"
-                          th:text="${journalContent}">
+        <form id="journalForm" th:action="@{/my-journal/save}" method="post" onsubmit="combineWeeklyEntries()">
+            <input type="hidden" id="combinedJournalContent" name="content" th:value="${journalContent}"/>
+
+            <div th:each="weekNumber : ${#numbers.sequence(1, 12)}" class="weekly-entry">
+                <label th:for="${'week_' + weekNumber + '_content'}" th:text="'Недела ' + ${weekNumber} + ':'"></label>
+                <textarea th:id="${'week_' + weekNumber + '_content'}"
+                          class="form-control weekly-journal-entry"
+                          rows="5">
                 </textarea>
             </div>
+
             <br/>
             <div>
-                <button type="submit" class="btn-primary">Зачувај</button>
+                <button type="submit" class="btn btn-primary">Зачувај Дневник</button>
             </div>
         </form>
     </div>
 </div>
+
+<script th:inline="javascript">
+    function populateWeeklyEntries() {
+        const combinedContent = /*[[${journalContent}]]*/ null;
+        if (combinedContent) {
+            const entries = combinedContent.split(/Недела \d+:/);
+
+            for (let i = 1; i <= 12; i++) {
+                const textarea = document.getElementById('week_' + i + '_content');
+                if (textarea && entries[i]) {
+                    textarea.value = entries[i].trim();
+                } else if (textarea) {
+                    textarea.value = '';
+                }
+            }
+        } else {
+            for (let i = 1; i <= 12; i++) {
+                const textarea = document.getElementById('week_' + i + '_content');
+                if (textarea) {
+                    textarea.value = '';
+                }
+            }
+        }
+    }
+
+    function combineWeeklyEntries() {
+        let combined = "";
+        for (let i = 1; i <= 12; i++) {
+            const textarea = document.getElementById('week_' + i + '_content');
+            if (textarea && textarea.value.trim() !== "") {
+                combined += "Недела " + i + ":\n" + textarea.value.trim() + "\n\n";
+            }
+        }
+        document.getElementById('combinedJournalContent').value = combined.trim();
+        return true;
+    }
+    document.addEventListener('DOMContentLoaded', populateWeeklyEntries);
+</script>
+
 </body>
 </html>

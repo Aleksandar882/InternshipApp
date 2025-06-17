@@ -111,6 +111,9 @@
                 <li class="nav-item" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_STUDENT'))}">
                     <a class="nav-link" href="/student/cv/manage">Мое CV</a>
                 </li>
+                <li class="nav-item" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_STUDENT'))}">
+                    <a class="nav-link" href="/student/current-internship">Тековна Пракса</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link " sec:authorize="!isAuthenticated()" href="/login">Најава</a>
                 </li>

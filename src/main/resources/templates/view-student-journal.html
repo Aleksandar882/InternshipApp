@@ -17,6 +17,7 @@
             border-radius: 4px;
             margin-top: 10px;
             word-wrap: break-word;
+            white-space: pre-wrap;
         }
         .message { padding: 10px; margin-bottom: 15px; border-radius: 3px; }
         .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
@@ -113,8 +114,8 @@
 
         <div th:if="${journalContent != null and not #strings.isEmpty(journalContent)}">
             <h4>Содржина на Дневникот:</h4>
-            <div class="journal-content-display" th:utext="${journalContent}">
-            </div>
+            <pre class="journal-content-display" th:text="${journalContent}">
+            </pre>
         </div>
 
         <div th:if="${journalContent == null or #strings.isEmpty(journalContent)}">
@@ -122,6 +123,13 @@
         </div>
 
         <hr class="custom-hr" style="margin-top: 20px; margin-bottom: 20px;">
+
+        <div>
+            <a th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_COORDINATOR'))}"
+               th:href="@{/students}" class="btn btn-primary">Назад</a>
+            <a th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_COMPANY'))}"
+               th:href="@{/students-company}" class="btn btn-primary">Назад</a>
+        </div>
 
     </div>
 </div>

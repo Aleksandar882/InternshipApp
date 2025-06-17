@@ -1,10 +1,10 @@
 package com.spring.internshipapp.Web;
 
-import com.spring.internshipapp.Model.Company;
-import com.spring.internshipapp.Model.Internship;
-import com.spring.internshipapp.Model.User;
+import com.spring.internshipapp.Model.*;
 import com.spring.internshipapp.Service.StudentService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
