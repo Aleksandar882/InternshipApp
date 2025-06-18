@@ -77,4 +77,6 @@ public class Student extends User {
     public void setSurname(String surname) {
         this.surname = surname;
     }
+
+    public void setApplicationStatus(ApplicationStatus applicationStatus){this.applicationStatus = applicationStatus;}
 }

@@ -130,8 +130,6 @@
 
 <div class="container">
     <div class="row">
-
-
         <div id="scrollto" class="col-lg-4 mt-5" th:each="student: ${students}">
             <div class="card text-center">
                 <div class="card-body">
@@ -158,6 +156,10 @@
                            class="btn btn-primary mb-2" title="Превземи Потврда">
                             <i class="fa fa-file-pdf-o"></i> Превземи Потврда
                         </a>
+                        <a th:href="@{/students/{id}/journal-pdf(id=${student.id})}"
+                           class="btn btn-primary mb-2" title="Превземи Дневник (PDF)">
+                            <i class="fa fa-book"></i> Превземи Дневник PDF
+                        </a>
                     </div>
 
                     <form class="custom-inline" method="POST" th:action="@{'/students/{id}/delete' (id=${student.id})}">
@@ -167,10 +169,7 @@
                 </div>
             </div>
         </div>
-
-
     </div>
 </div>
-
 </body>
 </html>

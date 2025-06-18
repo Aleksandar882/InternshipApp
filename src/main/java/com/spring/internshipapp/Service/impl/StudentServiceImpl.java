@@ -200,6 +200,7 @@ public class StudentServiceImpl implements StudentService {
                 .collect(Collectors.toList());
     }
 
+
     @Override
     @Transactional
     public List<Student> getAllByCoordinatorAndApplicationStatus(String coordinatorEmail, ApplicationStatus applicationStatus) {

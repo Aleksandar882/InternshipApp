@@ -243,4 +243,39 @@ public class ListStudentsController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
                 .body(resource);
     }
+
+    @GetMapping("/students/{id}/journal-pdf")
+    @PreAuthorize("hasAuthority('ROLE_COORDINATOR')")
+    public ResponseEntity<ByteArrayResource> downloadStudentJournalPdf(
+            @PathVariable("id") Long studentId,
+            @AuthenticationPrincipal User currentUserPrincipal) {
+
+        Optional<Student> studentOpt = studentService.getStudentWithCv(studentId);
+        if (!studentOpt.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        Student student = studentOpt.get();
+
+        Optional<JournalEntry> journalOpt = journalService.getJournalByStudentId(student.getId());
+        if (!journalOpt.isPresent() || journalOpt.get().getContent() == null || journalOpt.get().getContent().isEmpty()) {
+            return ResponseEntity.status(404).header("X-Error-Message", "Journal is empty or not found").build();
+        }
+
+        try {
+            byte[] pdfBytes = pdfGenerationService.generateStudentJournalPdf(student, journalOpt.get());
+            ByteArrayResource resource = new ByteArrayResource(pdfBytes);
+
+            String filename = String.format("Dnevnik_%s_%s.pdf",
+                    student.getSurname().replaceAll("[^a-zA-Z0-9]", ""),
+                    student.getName().replaceAll("[^a-zA-Z0-9]", ""));
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                    .body(resource);
+        } catch (IOException e) {
+            System.err.println("Error generating journal PDF for student " + studentId + ": " + e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 }
