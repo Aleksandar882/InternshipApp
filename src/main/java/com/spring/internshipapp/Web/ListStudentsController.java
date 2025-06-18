@@ -225,8 +225,9 @@ public class ListStudentsController {
         boolean isAssigned = student.getCoordinator() != null &&
                 student.getCoordinator().getId().equals(loggedInCoordinator.getId());
         boolean isFinished = student.getApplicationStatus() == ApplicationStatus.FINISHED;
+        boolean isCompleted = student.getApplicationStatus() == ApplicationStatus.COMPLETED;
 
-        if (!isAssigned || !isFinished) {
+        if (!isAssigned || (!isFinished && !isCompleted)) {
             System.err.println("Unauthorized attempt to download confirmation PDF.");
             return ResponseEntity.status(403).build();
         }
@@ -276,6 +277,38 @@ public class ListStudentsController {
         } catch (IOException e) {
             System.err.println("Error generating journal PDF for student " + studentId + ": " + e.getMessage());
             return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PostMapping("/students/{id}/mark-completed")
+    @PreAuthorize("hasAuthority('ROLE_COORDINATOR')")
+    public String markInternshipCompletedByCoordinator(
+            @PathVariable("id") Long studentId,
+            @AuthenticationPrincipal User currentUserPrincipal,
+            RedirectAttributes redirectAttributes) {
+
+        try {
+            Coordinator coordinator = getAuthenticatedCoordinator(currentUserPrincipal);
+            studentService.markInternshipAsCompletedByCoordinator(studentId, coordinator.getId());
+            redirectAttributes.addFlashAttribute("successMessage", "Праксата е комплетирана.");
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Грешка при промена на статус: " + e.getMessage());
+        }
+        return "redirect:/students";
+    }
+
+    @GetMapping("/students/completed-internships")
+    @PreAuthorize("hasAuthority('ROLE_COORDINATOR')")
+    public String listCompletedInternships(Model model, @AuthenticationPrincipal User currentUserPrincipal) {
+        try {
+            Coordinator coordinator = getAuthenticatedCoordinator(currentUserPrincipal);
+            List<Student> completedStudents = studentService.findCompletedStudentsForCoordinator(coordinator.getId());
+            model.addAttribute("students", completedStudents);
+            model.addAttribute("pageTitle", "Комплетирани Пракси");
+            return "completed-internships-list.html";
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "error";
         }
     }
 }

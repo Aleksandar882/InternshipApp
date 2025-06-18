@@ -29,4 +29,12 @@ public interface StudentRepository extends JpaRepository<Student,Long> {
 
     List<Student> findByInternship_Company_IdAndApplicationStatus(Long companyId, ApplicationStatus status);
 
+    Optional<Student> findByIdAndCoordinator_IdAndApplicationStatus(
+            Long studentId,
+            Long coordinatorId,
+            ApplicationStatus status
+    );
+
+    List<Student> findAllByCoordinator_IdAndApplicationStatus(Long coordinatorId, ApplicationStatus status);
+
 }

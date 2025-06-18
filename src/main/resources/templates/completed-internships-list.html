@@ -3,9 +3,8 @@
 <head>
     <title>Финки Пракси</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="UTF-8">
-     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
 
 
@@ -39,8 +38,7 @@
             object-fit: cover;
         }
         body{padding-top: 70px;
-            background-color: #e3f2fd;
-        }
+            background-color: #e3f2fd;}
 
         .custom-navbar{
             background-color: #286090;
@@ -67,7 +65,10 @@
             background-color: #286090;
             border-color: #286090;
         }
-
+        .message { padding: 10px; margin-bottom: 15px; border-radius: 3px; }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .status-completed { color: #28a745; font-weight: bold; }
     </style>
 
 </head>
@@ -81,16 +82,16 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item active" aria-current="page">
+                <li class="nav-item">
                     <a class="nav-link" href="/internships">Пракси</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/companies">Компании</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" aria-current="page">
                     <a href="/students" class="nav-link" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN') or #strings.contains(#authentication.principal.authorities,'ROLE_COORDINATOR'))}">Студенти</a>
                 </li>
-                <li class="nav-item" aria-current="page">
+                <li class="nav-item active" aria-current="page">
                     <a href="/students/completed-internships" class="nav-link" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN') or #strings.contains(#authentication.principal.authorities,'ROLE_COORDINATOR'))}">Комплетирани Пракси</a>
                 </li>
                 <li class="nav-item">
@@ -107,15 +108,6 @@
                 </li>
                 <li class="nav-item">
                     <a href="/register-coordinator" class="nav-link" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN'))}">Регистрација на координатор</a>
-                </li>
-                <li class="nav-item" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_STUDENT'))}">
-                    <a class="nav-link" href="/my-journal">Дневник</a>
-                </li>
-                <li class="nav-item" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_STUDENT'))}">
-                    <a class="nav-link" href="/student/cv/manage">Мое CV</a>
-                </li>
-                <li class="nav-item" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_STUDENT'))}">
-                    <a class="nav-link" href="/student/current-internship">Тековна Пракса</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link " sec:authorize="!isAuthenticated()" href="/login">Најава</a>
@@ -141,42 +133,51 @@
 </nav>
 
 <div class="container">
-    <div class="row">
+    <h1 class="mt-4 mb-3" th:text="${pageTitle}">Комплетирани Пракси</h1>
+    <div th:if="${#lists.isEmpty(students)}" class="alert alert-info">
+        Нема студенти со комплетирани пракси.
+    </div>
 
-
-        <div id="scrollto" class="col-lg-4 mt-5" th:each="internship: ${internships}">
+    <div class="row" th:if="${not #lists.isEmpty(students)}">
+        <div class="col-lg-4 mt-5" th:each="student: ${students}">
             <div class="card text-center h-100">
-                <img class="card-img-top" th:src="@{${internship.company.imageUrl}}" alt="Card image cap">
-                <div class="card-body">
-                    <h5 class="card-title" th:text="${internship.position}"></h5>
+                <div class="card-body d-flex flex-column">
+                    <span>Име:</span>
+                    <h5 class="card-title" th:text="${student.name}"></h5>
                     <hr class="custom-hr">
-                    <span>Локација:</span>
-                    <span class="card-text" th:text="${internship.location}"></span>
+                    <span>Презиме:</span>
+                    <span class="card-text" th:text="${student.surname}"></span>
                     <hr class="custom-hr">
-                    <p class="card-text" th:text="${internship.description}"></p>
+                    <span>Индекс:</span>
+                    <p class="card-text" th:text="${student.index}"></p>
                     <hr class="custom-hr">
-                    <span>Времетраење:</span>
-                    <p class="card-text" th:text="${internship.timePeriod}"></p>
+                    <span>Пракса:</span>
+                    <p class="card-text" th:text="${student.internship?.position}"></p>
                     <hr class="custom-hr">
-                    <span>Компанија:</span>
-                    <span class="card-text" th:text="${internship.company.name}"></span>
+                    <span>Компанија на праксата:</span>
+                    <span class="card-text" th:text="${student.internship?.company?.name}"></span>
                     <hr class="custom-hr">
 
-                    <form class="custom-inline" method="POST" th:action="@{'/internships/{id}/delete' (id=${internship.id})}" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN'))}">
-                        <button type="submit" class="btn btn-primary">Избриши</button>
-                    </form>
-                    <a th:href="@{'/internships/{id}/edit' (id=${internship.id})}"  class="btn btn-primary" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN'))}">Ажурирај </a>
-                    <form class="custom-inline" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN') or #strings.contains(#authentication.principal.authorities,'ROLE_STUDENT'))}" th:action="@{'/internship-add/add-internship/{id}' (id=${internship.getId()})}"
-                           th:method="POST">
-                         <button type="submit"
-                                 class="btn btn-primary">Пријави се</button>
-                     </form>
-                 </div>
-             </div>
-         </div>
+                    <p class="status-completed">Статус: КОМПЛЕТИРАНА</p>
+                    <hr class="custom-hr">
 
+                    <div th:if="${#authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities, 'COORDINATOR') or #strings.contains(#authentication.principal.authorities, 'ADMIN'))}">
+                        <a th:href="@{/my-journal/view/student/{studentId}(studentId=${student.id})}"
+                           class="btn btn-primary mb-2">Дневник</a>
+                        <a th:href="@{/students/{id}/confirmation-pdf(id=${student.id})}"
+                           class="btn btn-primary mb-2" title="Превземи Потврда">
+                            <i class="fa fa-file-pdf-o"></i> Превземи Потврда
+                        </a>
+                        <a th:href="@{/students/{id}/journal-pdf(id=${student.id})}"
+                           class="btn btn-primary mb-2" title="Превземи Дневник (PDF)">
+                            <i class="fa fa-book"></i> Превземи Дневник PDF
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-     </div>
- </div>
- </body>
- </html>
+</body>
+</html>

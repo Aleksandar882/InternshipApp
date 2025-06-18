@@ -90,6 +90,9 @@
                 <li class="nav-item active" aria-current="page">
                     <a href="/students" class="nav-link" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN') or #strings.contains(#authentication.principal.authorities,'ROLE_COORDINATOR'))}">Студенти</a>
                 </li>
+                <li class="nav-item" aria-current="page">
+                    <a href="/students/completed-internships" class="nav-link" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN') or #strings.contains(#authentication.principal.authorities,'ROLE_COORDINATOR'))}">Комплетирани Пракси</a>
+                </li>
                 <li class="nav-item">
                     <a href="/students-company" class="nav-link" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN') or #strings.contains(#authentication.principal.authorities,'ROLE_COMPANY'))}">Пријавени Студенти</a>
                 </li>
@@ -129,6 +132,10 @@
 </nav>
 
 <div class="container">
+    <h1 class="mt-4 mb-3">Студенти</h1>
+    <div th:if="${#lists.isEmpty(students)}" class="alert alert-info">
+        Нема студенти со комплетирани пракси.
+    </div>
     <div class="row">
         <div id="scrollto" class="col-lg-4 mt-5" th:each="student: ${students}">
             <div class="card text-center">
@@ -162,7 +169,7 @@
                         </a>
                     </div>
 
-                    <form class="custom-inline" method="POST" th:action="@{'/students/{id}/delete' (id=${student.id})}">
+                    <form class="custom-inline" method="POST" th:action="@{'/students/{id}/mark-completed' (id=${student.id})}">
                         <button type="submit" class="btn btn-primary">Одобри пракса</button>
                     </form>
 

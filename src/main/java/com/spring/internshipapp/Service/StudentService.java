@@ -51,4 +51,8 @@ public interface StudentService {
 
     public List<Student> getAllByCoordinatorAndApplicationStatus(String coordinatorEmail, ApplicationStatus applicationStatus);
 
+    public void markInternshipAsCompletedByCoordinator(Long studentId, Long coordinatorId);
+
+    public List<Student> findCompletedStudentsForCoordinator(Long coordinatorId);
+
 }

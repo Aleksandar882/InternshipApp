@@ -88,6 +88,9 @@
                 <li class="nav-item">
                     <a href="/students" class="nav-link" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN') or #strings.contains(#authentication.principal.authorities,'ROLE_COORDINATOR'))}">Студенти</a>
                 </li>
+                <li class="nav-item" aria-current="page">
+                    <a href="/students/completed-internships" class="nav-link" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN') or #strings.contains(#authentication.principal.authorities,'ROLE_COORDINATOR'))}">Комплетирани Пракси</a>
+                </li>
                 <li class="nav-item">
                     <a href="/students-company" class="nav-link" th:if="${ #authorization.expression('isAuthenticated()') and (#strings.contains(#authentication.principal.authorities,'ROLE_ADMIN') or #strings.contains(#authentication.principal.authorities,'ROLE_COMPANY'))}">Пријавени Студенти</a>
                 </li>

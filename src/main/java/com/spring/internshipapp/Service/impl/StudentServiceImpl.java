@@ -206,4 +206,30 @@ public class StudentServiceImpl implements StudentService {
     public List<Student> getAllByCoordinatorAndApplicationStatus(String coordinatorEmail, ApplicationStatus applicationStatus) {
         return this.studentRepository.findAllByCoordinatorEmailAndApplicationStatus(coordinatorEmail,applicationStatus);
     }
+
+    @Override
+    @Transactional
+    public void markInternshipAsCompletedByCoordinator(Long studentId, Long coordinatorId) {
+
+        Student student = studentRepository.findByIdAndCoordinator_IdAndApplicationStatus(
+                        studentId,
+                        coordinatorId,
+                        ApplicationStatus.FINISHED)
+                .orElseThrow(() -> new RuntimeException(
+                        "Student not found with ID " + studentId +
+                                ", or not assigned to coordinator " + coordinatorId +
+                                ", or not in FINISHED status."
+                ));
+
+        student.setApplicationStatus(ApplicationStatus.COMPLETED);
+
+        studentRepository.save(student);
+    }
+
+    @Override
+    @Transactional
+    public List<Student> findCompletedStudentsForCoordinator(Long coordinatorId) {
+        return studentRepository.findAllByCoordinator_IdAndApplicationStatus(coordinatorId, ApplicationStatus.COMPLETED);
+    }
+
 }
