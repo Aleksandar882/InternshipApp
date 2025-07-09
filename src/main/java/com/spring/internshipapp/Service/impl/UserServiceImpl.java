@@ -110,9 +110,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user=  this.userRepository.findByEmail(email).orElseThrow(InvalidEmailException::new);
-        UserDetails userDetails= userRepository.findByEmail(email) // This should return Optional<com.spring.internshipapp.Model.User>
+        return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
-        return userDetails;
     }
 }
