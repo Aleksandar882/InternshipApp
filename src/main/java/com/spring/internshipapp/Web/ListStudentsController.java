@@ -235,9 +235,7 @@ public class ListStudentsController {
         byte[] pdfBytes = pdfGenerationService.generateInternshipConfirmationPdf(student);
         ByteArrayResource resource = new ByteArrayResource(pdfBytes);
 
-        String filename = String.format("Potvrda_Praksa_%s_%s.pdf",
-                student.getSurname().replaceAll("[^a-zA-Z0-9]", ""),
-                student.getName().replaceAll("[^a-zA-Z0-9]", ""));
+        String filename = String.format("Potvrda_Praksa_%s.pdf", student.getIndex());
 
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_PDF)
@@ -266,9 +264,7 @@ public class ListStudentsController {
             byte[] pdfBytes = pdfGenerationService.generateStudentJournalPdf(student, journalOpt.get());
             ByteArrayResource resource = new ByteArrayResource(pdfBytes);
 
-            String filename = String.format("Dnevnik_%s_%s.pdf",
-                    student.getSurname().replaceAll("[^a-zA-Z0-9]", ""),
-                    student.getName().replaceAll("[^a-zA-Z0-9]", ""));
+            String filename = String.format("Dnevnik_%s.pdf",student.getIndex());
 
             return ResponseEntity.ok()
                     .contentType(MediaType.APPLICATION_PDF)
